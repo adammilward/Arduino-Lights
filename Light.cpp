@@ -7,17 +7,20 @@
 
 
 #include "Light.h"
-#include "arduino.h"
+#include "Arduino.h"
 
 
 
 //setLimit setLim = LOW;  // declare the enum for setting LED brightness
 
 const float Light::DEF_GAIN = 0.2;     // default gain for use with Shift()
-static Light::fadeMode fMode = Light::SIN;
+Light::fadeMode Light::fMode = Light::SIN;
 
-Light::Light(int inPin){   // Constructor
+
+Light::Light(int inPin, float inBase){   // Constructor
 	pin = inPin;            // sets the pin
+	base = inBase;
+	calcPow();
 }
 
 //  change change power by a given gain or default

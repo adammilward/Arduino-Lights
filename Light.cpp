@@ -16,24 +16,30 @@
 const float Light::DEF_GAIN = 0.2;     // default gain for use with Shift()
 Light::fadeMode Light::fMode = Light::SIN;
 
-
-Light::Light(int inPin, float inBase){   // Constructor
+// Constructor
+Light::Light(int inPin,
+			 float inGain,
+			 float inLower,
+			 float inUpper)
+{
 	pin = inPin;            // sets the pin
-	base = inBase;
+	gain = inGain;
+	range = inUpper - inLower; // range between 0 and 1
+	lower = inLower * 254 + 1;
 	calcPow();
 }
 
 //  change change power by a given gain or default
-void Light::shift(int op, float gain) {
-	base += op * gain;
+void Light::shift(int op, float shiftGain) {
+	base += op * shiftGain;
 	set();
 }
 
 //  called after a shift is made to the base, or directly to set brightness
-void Light::set(bool flash, int inBase) {
+void Light::set(bool flash, int setBase) {
 
-	if (inBase > -2) { // default is -2 and nothing hapens
-		base = inBase;
+	if (setBase > -2) { // default is -2 and nothing hapens
+		base = setBase;
 	}
 
 	float exponant;
@@ -62,7 +68,7 @@ void Light::set(bool flash, int inBase) {
 }
 
 // used like a combination of shift + set, for fading lights
-void Light::slide(float gain) {
+void Light::slide() {
 
 	base = base + (shiftOp * gain);	    // update base
 
@@ -70,14 +76,14 @@ void Light::slide(float gain) {
 	if (base >= 1) {
 		shiftOp = -1;	        // apply direction change
 		base = 1;		        // set base to max
-		power = 255;	        // set power to maximum
 	} else if (base <= 0) {
 		shiftOp = 1;
 		base = 0;
-		power = 1;	        // set power to minimum
 	} else {
-		calcPow();	            // calculate led power 1 to 255
 	}
+	calcPow();	            // calculate led power 1 to 255
+	//Serial.print("  power  ");
+	//Serial.println(power);
 	analogWrite(pin, (power));
 }
 
@@ -85,31 +91,42 @@ void Light::slide(float gain) {
 void Light::calcPow() {
 
 	float temp; // declare the temporary foloat for calculations
+	temp = base;
+
+	//Serial.print("  base   ");
+	//Serial.print(base);
+	//Serial.print("  temp   ");
+	//Serial.print(temp);
 
 	switch (fMode) {
 	case Light::LIN:
-		power = base * 254 + 1;	        // calculate led power 1 to 255
+		temp = temp * 254;	        // calculate led power 1 to 255
 		break;
 	case Light::SIN:
-		temp = 1 - base;                 // invert the base ( 0 -> 1, 1 -> 0)
+		temp = 1 - temp;                 // invert the base ( 0 -> 1, 1 -> 0)
 		temp = cos(temp * 3.14159265);	// calculate the sine wave -1 to +1
-		temp = temp + 1;                   // temp is sinusoidal from 0 to 2
-		power = temp * 127 + 1;	            // modify led power 1 to 255
+		temp = temp + 1;            // temp is sinusoidal from 0 to 2
+		temp = temp * 127;	            // modify led power 1 to 255
 		break;
 	case Light::EXP:
-		temp = 7.994353437 * base;	    // set exponant 0 to 8ish
-		power = pow(2, temp);	    // power = 2^temp
+		temp = 7.994353437 * temp;	    // set exponant 0 to 8ish
+		temp = pow(2, temp);	    // power = 2^temp
 		break;
 	case Light::EXPSIN:
-		temp = 1 - base;               // invert the base ( 0 -> 1, 1 -> 0)
+		temp = 1 - temp;               // invert the base ( 0 -> 1, 1 -> 0)
 		temp = cos(temp * 3.14159265) + 1; 	// calculate the sine wave 0 to 2
-		temp = temp * 7.994353437 / 2;      // calculate exponant ( 0 to 8ish)
-		power = int(pow(2, temp));	// power = 2^temp
+		temp = temp * 7.994353437 / 2 ;      // calculate exponant ( 0 to 8ish)
+		temp = int(pow(2, temp));	// power = 2^temp
 		break;
 	default:
-
 		break;
 	}
+
+
+
+	power = temp * range + lower;
+	//Serial.print("  temp   ");
+	//Serial.print(temp);
 }
 
 void Light::setMode(fadeMode inMode){

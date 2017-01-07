@@ -12,21 +12,20 @@ void (Light::*fadeModePtr)(float); // declare the pointer with apropriate return
 IRrecv irrecv(8);
 decode_results Results;
 
-const int DELAY = 50;
+const int DELAY = 100;
 unsigned long waitMillisLights;	// for timeing the next event.
 int delayCount;			// counter for every time we passs delayt
 
-Light Red(8, 0);
-Light Green(9, 0.5);
-Light Blue(10, 0.7);
-
-
+Light Red  (10, 0.002, 0, 1);
+Light Green(9, 0.005, 0, 0.3);
+Light Blue (6, 0.003, 0, 0.3);
 
 void setup() {
 	irrecv.enableIRIn(); // Start the receiver
 	// initialize serial communication at 9600 bits per second:
 	Serial.begin(9600);
 	Serial.println("Lights2");
+	Serial.println(Light::fMode);
 
 	// Timer0 is already used for millis() - we'll just interrupt somewhere
 	// in the middle and call the "Compare A" function below
@@ -44,27 +43,30 @@ SIGNAL(TIMER0_COMPA_vect) {
 		switch (delayCount) {
 		case 1:
 			// slide should not be more than 0.002 for smootheness
-			Red.slide(0.0010);
+			//Serial.print("Red    ");
+			Red.slide();
 			break;
 		case 2:
-			Green.slide(0.002);
+			//Serial.print("Green  ");
+			Green.slide();
 			break;
 		case 3:
-			Blue.slide(0.0011);
+			//Serial.print("Blue   ");
+			Blue.slide();
 			delayCount = 0;
 			break;
 		default:
-			Serial.print(Red.power);
-			Serial.print("    ");
 			Serial.print(Red.base * 100);
 			Serial.print("    ");
-			Serial.print(Green.power);
+			Serial.print(Red.power);
 			Serial.print("    ");
 			Serial.print(Green.base * 100);
-			Serial.print("     ");
-			Serial.print(Blue.power);
+			Serial.print("    ");
+			Serial.print(Green.power);
 			Serial.print("     ");
 			Serial.print(Blue.base * 100);
+			Serial.print("     ");
+			Serial.print(Blue.power);
 			Serial.println(" ");
 			delayCount = 0;
 			break;

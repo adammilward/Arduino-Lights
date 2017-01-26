@@ -26,9 +26,8 @@ private:
 
 public:
 
-	enum fadeMode { // declare enum fro setting fade mode
-		LIN, SIN, EXP, EXPSIN
-	};
+	// declare enum fro setting fade mode
+	enum fadeMode { LIN, SIN, EXP, EXPSIN };
 	static fadeMode fMode;
 
 	float base; //the base value fro 0 to 1 from which the brightness is calculated

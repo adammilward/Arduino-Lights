@@ -1,15 +1,15 @@
 #include "Arduino.h"
 #include "Light.h"
 #include "IRremote.h"
+#include "RemoteControll.h"
 
 
-void (Light::*fadeModePtr)(float); // declare the pointer with apropriate return and input types
-//fadeModePtr = &Light::LinearFade;  // assign address of light memeber function to pointer
+
 //fadeModePtr = &Light::SinFade;
 //fadeModePtr = &Light::ExpFade;
 //fadeModePtr = &Light::SinExpFade;
 
-IRrecv irrecv(8);
+IRrecv irrecv(11);
 decode_results Results;
 
 const int DELAY = 100;
@@ -29,12 +29,12 @@ void setup() {
 
 	// Timer0 is already used for millis() - we'll just interrupt somewhere
 	// in the middle and call the "Compare A" function below
-	OCR0A = 0x80;
-	TIMSK0 |= _BV(OCIE0A);
-	waitMillisLights = millis() + DELAY;
+	//OCR0A = 0x80;
+	//TIMSK0 |= _BV(OCIE0A);
+	//waitMillisLights = millis() + DELAY;
 }
 
-// Interrupt is called once a millisecond, looks for any new GPS data, and stores it
+// Interrupt is called once a millisecond,
 SIGNAL(TIMER0_COMPA_vect) {
 	if ((long) (millis() - waitMillisLights) >= 0) {
 	waitMillisLights += DELAY; // set the time for next interupt
@@ -78,12 +78,11 @@ SIGNAL(TIMER0_COMPA_vect) {
 // The loop function is called in an endless loop
 void loop() {
 
-//	if (irrecv.decode(&Results)) {
-//		LightRemote::receive(Results.value, LightSt);
-//		Serial.println(Results.value, HEX);
-//		delay(200);
-//		irrecv.resume(); // Receive the next value
-//	}
+	if (irrecv.decode(&Results)) {
+		RemoteControll::receive(Results.value);
+		delay(200);
+		irrecv.resume(); // Receive the next value
+	}
 
 
 }

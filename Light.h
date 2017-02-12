@@ -6,8 +6,9 @@
  */
 
 
-#ifndef LIGHT_H_
-#define LIGHT_H_
+
+#ifndef Light_h_
+#define Light_h_
 
 class Light{
 private:

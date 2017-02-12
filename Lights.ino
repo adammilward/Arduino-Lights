@@ -1,7 +1,9 @@
+
+#include "light.h"
 #include "Arduino.h"
-#include "Light.h"
 #include "IRremote.h"
 #include "RemoteControll.h"
+
 
 
 
@@ -16,9 +18,6 @@ const int DELAY = 100;
 unsigned long waitMillisLights;	// for timeing the next event.
 int delayCount;			// counter for every time we passs delayt
 
-Light Red  (10, 0.002, 0, 1);
-Light Green(9, 0.005, 0, 0.3);
-Light Blue (6, 0.003, 0, 0.3);
 
 void setup() {
 	irrecv.enableIRIn(); // Start the receiver
@@ -31,7 +30,7 @@ void setup() {
 	// in the middle and call the "Compare A" function below
 	//OCR0A = 0x80;
 	//TIMSK0 |= _BV(OCIE0A);
-	//waitMillisLights = millis() + DELAY;
+	waitMillisLights = millis() + DELAY;
 }
 
 // Interrupt is called once a millisecond,
@@ -44,29 +43,29 @@ SIGNAL(TIMER0_COMPA_vect) {
 		case 1:
 			// slide should not be more than 0.002 for smootheness
 			//Serial.print("Red    ");
-			Red.slide();
+			//Red.slide();
 			break;
 		case 2:
 			//Serial.print("Green  ");
-			Green.slide();
+			//Green.slide();
 			break;
 		case 3:
 			//Serial.print("Blue   ");
-			Blue.slide();
+			//Blue.slide();
 			delayCount = 0;
 			break;
 		default:
-			Serial.print(Red.base * 100);
+			//Serial.print(Red.base * 100);
 			Serial.print("    ");
-			Serial.print(Red.power);
+			//Serial.print(Red.power);
 			Serial.print("    ");
-			Serial.print(Green.base * 100);
+			//Serial.print(Green.base * 100);
 			Serial.print("    ");
-			Serial.print(Green.power);
+			//Serial.print(Green.power);
 			Serial.print("     ");
-			Serial.print(Blue.base * 100);
+			//Serial.print(Blue.base * 100);
 			Serial.print("     ");
-			Serial.print(Blue.power);
+			//Serial.print(Blue.power);
 			Serial.println(" ");
 			delayCount = 0;
 			break;
@@ -83,6 +82,8 @@ void loop() {
 		delay(200);
 		irrecv.resume(); // Receive the next value
 	}
+
+	//Serial.println(RemoteControll::Red.base);
 
 
 }

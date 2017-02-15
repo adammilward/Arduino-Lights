@@ -15,8 +15,8 @@ private:
 
 	static const float DEF_GAIN;     // default gain for use with Shift()
 
-	int pin;            // the pin for this color
-	int shiftOp = 1;   //  1 or -1  controlls the direction of shift
+	int pin;            // the pin for this colour
+	int shiftOp = 1;   //  1 or -1  controls the direction of shift
 	float gain;		// for fading the lights
 	float lower;   // lower limit 1 to 255
 	float range;   // range/multiplier 0 to 1
@@ -27,18 +27,19 @@ private:
 
 public:
 
-	// declare enum fro setting fade mode
+	// declare enum for setting fade mode
 	enum fadeMode { LIN, SIN, EXP, EXPSIN };
 	static fadeMode fMode;
 
-	float base; //the base value fro 0 to 1 from which the brightness is calculated
-	int power; 			// led Power 1 to 255
+	float base; //the base value 0 to 1 for deriving power
+	int power; 			// led Power 1 to 255 derived from base
 
-	Light(int inPin,
-			float inGain = DEF_GAIN,
-			float inLower = 0,
-			float inUpper = 1
-			);
+	Light(
+		int inPin,
+		float inGain = DEF_GAIN,
+		float inLower = 0,
+		float inUpper = 1
+		);
 	void shift(int op, float shiftGain = DEF_GAIN);
 	void set(bool flash = false, int setBase = -2);
 	void slide();

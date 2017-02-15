@@ -13,8 +13,8 @@
 
 //setLimit setLim = LOW;  // declare the enum for setting LED brightness
 
-const float Light::DEF_GAIN = 0.2;     // default gain for use with Shift()
-Light::fadeMode Light::fMode = Light::SIN;
+const float Light::DEF_GAIN = 0.1;     // default gain for use with Shift()
+Light::fadeMode Light::fMode = Light::EXP;
 
 // Constructor
 Light::Light(int inPin,
@@ -30,6 +30,8 @@ Light::Light(int inPin,
 }
 
 //  change change power by a given gain or default
+// int op = -1 or 1
+// float shiftGain < 1
 void Light::shift(int op, float shiftGain) {
 	base += op * shiftGain;
 	set();
@@ -65,9 +67,19 @@ void Light::set(bool flash, int setBase) {
 		power = int(pow(2, exponant));
 		analogWrite(pin, (power));
 	}
+
+
+	Serial.print("fMode ");
+	Serial.print(fMode);
+	Serial.print("   base ");
+	Serial.print(base);
+	Serial.print("   power ");
+	Serial.println(power);
+
 }
 
-// used like a combination of shift + set, for fading lights
+// change power of light automatically
+// using built in data members shiftOp and gain
 void Light::slide() {
 
 	base = base + (shiftOp * gain);	    // update base
@@ -82,21 +94,14 @@ void Light::slide() {
 	} else {
 	}
 	calcPow();	            // calculate led power 1 to 255
-	//Serial.print("  power  ");
-	//Serial.println(power);
 	analogWrite(pin, (power));
 }
 
 // for fading lights, called by Slide()
 void Light::calcPow() {
 
-	float temp; // declare the temporary foloat for calculations
+	float temp; // declare the temporary float for calculations
 	temp = base;
-
-	//Serial.print("  base   ");
-	//Serial.print(base);
-	//Serial.print("  temp   ");
-	//Serial.print(temp);
 
 	switch (fMode) {
 	case Light::LIN:
@@ -123,22 +128,18 @@ void Light::calcPow() {
 	}
 
 
-
 	power = temp * range + lower;
-	//Serial.print("  temp   ");
-	//Serial.print(temp);
+
+	Serial.print("fMode   ");
+	Serial.print(fMode);
+	Serial.print(" base   ");
+	Serial.print(base);
+	Serial.print(" power   ");
+	Serial.println(power);
+
 }
 
 void Light::setMode(fadeMode inMode){
 	fMode = inMode;
 }
 
-/*
- Serial.print("gain   ");
- Serial.print(gain);
- Serial.print("expon   ");
- Serial.print(Red.exponant);
- Serial.print("op   ");
- Serial.println(op);
- */
-//delay(20);

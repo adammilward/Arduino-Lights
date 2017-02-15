@@ -5,13 +5,20 @@
 #include "RemoteControll.h"
 
 
+void (*mp3Plus)() = &plus;
 
+void plus(){
+	Serial.println("plus");
+}
 
+void minus(){
+
+}
 //fadeModePtr = &Light::SinFade;
 //fadeModePtr = &Light::ExpFade;
 //fadeModePtr = &Light::SinExpFade;
 
-IRrecv irrecv(11);
+IRrecv irrecv(12);
 decode_results Results;
 
 const int DELAY = 100;
@@ -82,8 +89,6 @@ void loop() {
 		delay(200);
 		irrecv.resume(); // Receive the next value
 	}
-
-	//Serial.println(RemoteControll::Red.base);
 
 
 }

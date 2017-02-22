@@ -2,25 +2,19 @@
 #include "light.h"
 #include "Arduino.h"
 #include "IRremote.h"
+
+#include "Controller.h"
 #include "RemoteControll.h"
-#include "RemoteRecieve.h"
 
 
-void (*mp3Plus)() = &plus;
 
-void plus(){
-	Serial.println("plus");
-}
-
-void minus(){
-
-}
 //fadeModePtr = &Light::SinFade;
 //fadeModePtr = &Light::ExpFade;
 //fadeModePtr = &Light::SinExpFade;
 
 IRrecv irrecv(12);
 decode_results Results;
+Controller Remote;
 
 const int DELAY = 100;
 unsigned long waitMillisLights;	// for timeing the next event.
@@ -40,7 +34,7 @@ void setup() {
 	//TIMSK0 |= _BV(OCIE0A);
 	waitMillisLights = millis() + DELAY;
 }
-
+/*
 // Interrupt is called once a millisecond,
 SIGNAL(TIMER0_COMPA_vect) {
 	if ((long) (millis() - waitMillisLights) >= 0) {
@@ -80,13 +74,13 @@ SIGNAL(TIMER0_COMPA_vect) {
 			//}
 		}
 	}
-}
+}*/
 
 // The loop function is called in an endless loop
 void loop() {
 
 	if (irrecv.decode(&Results)) {
-		RemoteControll::receive(Results.value);
+	    Remote.receive(Results.value);
 		delay(200);
 		irrecv.resume(); // Receive the next value
 	}

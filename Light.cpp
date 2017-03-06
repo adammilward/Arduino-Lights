@@ -14,9 +14,9 @@
 //setLimit setLim = LOW;  // declare the enum for setting LED brightness
 
 const float Light::DEF_GAIN = 0.1;     // default gain for use with Shift()
+
 Light::fadeMode Light::fMode = Light::EXP;
 
-// Constructor
 Light::Light(int inPin,
 			 float inGain,
 			 float inLower,
@@ -104,20 +104,20 @@ void Light::calcPow() {
 	temp = base;
 
 	switch (fMode) {
-	case Light::LIN:
+	case LIN:
 		temp = temp * 254;	        // calculate led power 1 to 255
 		break;
-	case Light::SIN:
+	case SIN:
 		temp = 1 - temp;                 // invert the base ( 0 -> 1, 1 -> 0)
 		temp = cos(temp * 3.14159265);	// calculate the sine wave -1 to +1
 		temp = temp + 1;            // temp is sinusoidal from 0 to 2
 		temp = temp * 127;	            // modify led power 1 to 255
 		break;
-	case Light::EXP:
+	case EXP:
 		temp = 7.994353437 * temp;	    // set exponant 0 to 8ish
 		temp = pow(2, temp);	    // power = 2^temp
 		break;
-	case Light::EXPSIN:
+	case EXPSIN:
 		temp = 1 - temp;               // invert the base ( 0 -> 1, 1 -> 0)
 		temp = cos(temp * 3.14159265) + 1; 	// calculate the sine wave 0 to 2
 		temp = temp * 7.994353437 / 2 ;      // calculate exponant ( 0 to 8ish)

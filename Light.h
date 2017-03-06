@@ -27,9 +27,9 @@ private:
 
 public:
 
-	// declare enum for setting fade mode
-	enum fadeMode { LIN, SIN, EXP, EXPSIN };
-	static fadeMode fMode;
+	// mode for automatic fading
+    enum fadeMode { STATIC, LIN, SIN, EXP, EXPSIN };
+    static fadeMode fMode;
 
 	float base; //the base value 0 to 1 for deriving power
 	int power; 			// led Power 1 to 255 derived from base

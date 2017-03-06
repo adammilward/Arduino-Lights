@@ -4,8 +4,6 @@
 #include "IRremote.h"
 
 #include "Controller.h"
-#include "RemoteControll.h"
-
 
 
 //fadeModePtr = &Light::SinFade;

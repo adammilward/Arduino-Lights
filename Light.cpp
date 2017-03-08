@@ -9,13 +9,9 @@
 #include "Light.h"
 #include "Arduino.h"
 
-
-
-//setLimit setLim = LOW;  // declare the enum for setting LED brightness
-
 const float Light::DEF_GAIN = 0.1;     // default gain for use with Shift()
 
-Light::fadeMode Light::fMode = Light::EXP;
+Light::fadeMode Light::fMode = Light::EXPSIN;
 
 Light::Light(int inPin,
 			 float inGain,
@@ -33,20 +29,23 @@ Light::Light(int inPin,
 // int op = -1 or 1
 // float shiftGain < 1
 void Light::shift(int op, float shiftGain) {
-	base += op * shiftGain;
-	set();
+	float setBase = base + op * shiftGain;
+	set(setBase, true);
 }
 
 //  called after a shift is made to the base, or directly to set brightness
-void Light::set(bool flash, int setBase) {
+// float setBase <=1 (0 is lowest possible, < 0 is off);
+// bool flash, true if you want to flash for extremes (0 or 1)
+void Light::set(float setBase, bool flash) {
 
-	if (setBase > -2) { // default is -2 and nothing hapens
+    // default is -2 and lights are set from what ever the base is set to
+	if (setBase > -2) {
 		base = setBase;
 	}
 
 	float exponant;
 
-	if (base < 0) {
+	if (setBase < 0) {
 		base = 0;
 		if (flash == true) {
 			analogWrite(pin, (64)); //flash to eighth brightness
@@ -54,7 +53,7 @@ void Light::set(bool flash, int setBase) {
 		}
 		Serial.println("LOW");
 		digitalWrite(pin, LOW);         //Set digital high
-	} else if (base > 1) {
+	} else if (setBase > 1) {
 		base = 1;
 		if (flash == true) {
 			analogWrite(pin, (128));    //flash to half brightness
@@ -63,6 +62,7 @@ void Light::set(bool flash, int setBase) {
 		Serial.println("HIGH");
 		digitalWrite(pin, HIGH);           //Set digital high
 	} else {
+	    base = setBase;
 		exponant = 7.994353437 * base;
 		power = int(pow(2, exponant));
 		analogWrite(pin, (power));
@@ -127,15 +127,14 @@ void Light::calcPow() {
 		break;
 	}
 
-
 	power = temp * range + lower;
 
-	Serial.print("fMode   ");
-	Serial.print(fMode);
-	Serial.print(" base   ");
-	Serial.print(base);
-	Serial.print(" power   ");
-	Serial.println(power);
+	//Serial.print("fMode   ");
+	//Serial.print(fMode);
+	//Serial.print(" base   ");
+	//Serial.print(base);
+	//Serial.print(" power   ");
+	//Serial.println(power);
 
 }
 

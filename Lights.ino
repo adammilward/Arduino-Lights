@@ -1,15 +1,15 @@
 
-#include "light.h"
+
 #include "Arduino.h"
 #include "IRremote.h"
 #include "Controller.h"
 
 
-IRrecv irrecv(12);      // from the ir decode library
+IRrecv irrecv(CONFIG::IREC_PIN);      // from the ir decode library
 decode_results Results; // from the ir decode library
 Controller RemoteCtr;      // handles the remotes
 
-const int DELAY = 100;  // delay in miliseconds
+int DELAY = CONFIG::DELAY;  // delay in miliseconds
 unsigned long waitMillisLights; // for timeing the next event.
 
 void setup() {
@@ -24,6 +24,11 @@ void setup() {
 	OCR0A = 0x80;
 	TIMSK0 |= _BV(OCIE0A);
 	waitMillisLights = millis() + DELAY;
+
+    delay(100);
+    RemoteCtr.LightRemote.Red.set(0);
+    RemoteCtr.LightRemote.Green.set(0);
+    RemoteCtr.LightRemote.Blue.set(0);
 }
 
 // Interrupt is called once a millisecond,
@@ -41,9 +46,6 @@ void loop() {
 
 	if (irrecv.decode(&Results)) {
 	    RemoteCtr.receive(Results.value);
-		delay(200);
 		irrecv.resume(); // Receive the next value
 	}
-
-
 }

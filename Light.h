@@ -5,7 +5,7 @@
  *      Author: Adam Milward
  */
 
-
+#include "Config.h"
 
 #ifndef Light_h_
 #define Light_h_
@@ -13,7 +13,7 @@
 class Light{
 private:
 
-	static const float DEF_GAIN;     // default gain for use with Shift()
+	static constexpr float DEF_GAIN = 0.0625;     // default gain for use with Shift()
 
 	int pin;            // the pin for this colour
 	int shiftOp = 1;    //  1 or -1  controls the direction of shift
@@ -33,6 +33,7 @@ public:
 	int power;      // led Power 1 to 255 derived from base
 
 	Light(
+
 		int inPin,
 		float inGain = DEF_GAIN,
 		float inLower = 0,
@@ -41,7 +42,8 @@ public:
 	void shift(int op, float shiftGain = DEF_GAIN);
 	void set(float setBase, bool flash = false);
 	void slide();
-	static void setMode(fadeMode inMode);
+	void half();
+	static void setFadeMode(fadeMode inMode);
 };
 
 #endif /* LIGHT_H_ */

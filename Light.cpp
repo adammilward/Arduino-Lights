@@ -9,20 +9,20 @@
 #include "Light.h"
 #include "Arduino.h"
 
-const float Light::DEF_GAIN = 0.1;     // default gain for use with Shift()
+Light::fadeMode Light::fMode = Light::STATIC;
 
-Light::fadeMode Light::fMode = Light::EXPSIN;
-
-Light::Light(int inPin,
-			 float inGain,
-			 float inLower,
-			 float inUpper)
+Light::Light(
+        int inPin,
+		float inGain,
+		float inLower,
+		float inUpper)
 {
-	pin = inPin;            // sets the pin
+    pin = inPin;            // sets the pin
 	gain = inGain;
 	range = inUpper - inLower; // range between 0 and 1
 	lower = inLower * 254 + 1;
-	calcPow();
+	base = inLower;
+	set(2);
 }
 
 //  change change power by a given gain or default
@@ -37,7 +37,7 @@ void Light::shift(int op, float shiftGain) {
 // float setBase <=1 (0 is lowest possible, < 0 is off);
 // bool flash, true if you want to flash for extremes (0 or 1)
 void Light::set(float setBase, bool flash) {
-
+    Serial.println(setBase);
     // default is -2 and lights are set from what ever the base is set to
 	if (setBase > -2) {
 		base = setBase;
@@ -51,6 +51,7 @@ void Light::set(float setBase, bool flash) {
 			analogWrite(pin, (64)); //flash to eighth brightness
 			delay(20);              // delay for flash
 		}
+		power = 0;
 		Serial.println("LOW");
 		digitalWrite(pin, LOW);         //Set digital high
 	} else if (setBase > 1) {
@@ -59,29 +60,28 @@ void Light::set(float setBase, bool flash) {
 			analogWrite(pin, (128));    //flash to half brightness
 			delay(20);                  // delay for flash
 		}
+		power = 255;
 		Serial.println("HIGH");
 		digitalWrite(pin, HIGH);           //Set digital high
 	} else {
 	    base = setBase;
-		exponant = 7.994353437 * base;
+		exponant = 8 * base;
 		power = int(pow(2, exponant));
+		Serial.print("set base to ");
+		Serial.println(setBase);
 		analogWrite(pin, (power));
 	}
-
-
 	Serial.print("fMode ");
 	Serial.print(fMode);
 	Serial.print("   base ");
 	Serial.print(base);
 	Serial.print("   power ");
 	Serial.println(power);
-
 }
 
 // change power of light automatically
 // using built in data members shiftOp and gain
 void Light::slide() {
-
 	base = base + (shiftOp * gain);	    // update base
 
 	// switch direction if required and return value between 1 and 255
@@ -99,7 +99,6 @@ void Light::slide() {
 
 // for fading lights, called by Slide()
 void Light::calcPow() {
-
 	float temp; // declare the temporary float for calculations
 	temp = base;
 
@@ -137,8 +136,18 @@ void Light::calcPow() {
 	//Serial.println(power);
 
 }
+// called when resetting fade
+// sets the base to half, calculates the power of lights
+// and writes to pin
+void Light::half() {
+    base = 0.5;
+    calcPow();
+    analogWrite(pin, (power));
+    // randomly set the rate and directions
 
-void Light::setMode(fadeMode inMode){
+}
+void Light::setFadeMode(fadeMode inMode){
 	fMode = inMode;
 }
+
 

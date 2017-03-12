@@ -10,23 +10,28 @@
 Controller::Controller() {
     mode = LIGHTS;
     LightCtr LightRemote;
-    storedValue = 0;
 }
 void Controller::receive(unsigned long inValue){
+    Serial.println();
+    static int hCount;
     if (inValue == IR_HOLD) {
-      decode(storedValue);
+        hCount++;
+        decode(storedValue, hCount);
     } else {
-      decode(inValue);
+        hCount = 0;
+        decode(inValue, hCount);
     }
     delay(200);
 }
-void Controller::decode(unsigned long inValue){
+void Controller::decode(unsigned long inValue, int inHCount){
     bool actioned = false;
     switch (mode){
         case LIGHTS:
+            LightRemote.holdCount = inHCount;
             actioned = LightRemote.action(inValue);
             break;
         case MP3:
+            //MP3Remote.holdCount = inHCount;
             actioned = LightRemote.action(inValue);
             break;
     }

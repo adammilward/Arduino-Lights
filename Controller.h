@@ -13,7 +13,6 @@
 class Controller {
 public:
     Controller();
-
     const unsigned long int IR_HOLD = 0xFFFFFFFF;
     LightCtr LightRemote;
     void receive(unsigned long value);
@@ -21,8 +20,8 @@ public:
 private:
     enum Mode {LIGHTS, MP3};
     Mode mode;
-    unsigned long int storedValue;
-    void decode(unsigned long);
+    unsigned long int storedValue = 0;  // for sending when hold is pressed
+    void decode(unsigned long, int);
 
 };
 #endif /* REMOTERECEIVE_H_ */

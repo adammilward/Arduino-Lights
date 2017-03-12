@@ -37,7 +37,6 @@ void Light::shift(int op, float shiftGain) {
 // float setBase <=1 (0 is lowest possible, < 0 is off);
 // bool flash, true if you want to flash for extremes (0 or 1)
 void Light::set(float setBase, bool flash) {
-    Serial.println(setBase);
     // default is -2 and lights are set from what ever the base is set to
 	if (setBase > -2) {
 		base = setBase;
@@ -46,7 +45,7 @@ void Light::set(float setBase, bool flash) {
 	float exponant;
 
 	if (setBase < 0) {
-		base = 0;
+		base = -1;
 		if (flash == true) {
 			analogWrite(pin, (64)); //flash to eighth brightness
 			delay(20);              // delay for flash
@@ -55,7 +54,7 @@ void Light::set(float setBase, bool flash) {
 		Serial.println("LOW");
 		digitalWrite(pin, LOW);         //Set digital high
 	} else if (setBase > 1) {
-		base = 1;
+		base = 2;
 		if (flash == true) {
 			analogWrite(pin, (128));    //flash to half brightness
 			delay(20);                  // delay for flash

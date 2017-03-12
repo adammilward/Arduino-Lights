@@ -29,18 +29,20 @@ public:
 
     bool action(unsigned long value);
     void interrupt();
+    int holdCount = 0;          // count how long button pressed
 
 private:
     enum colour { RED, GREEN, BLUE, WHITE };
     colour LightColour = colour::WHITE;
-    int colourStore[4][3] = {
-            {2, -1, -1}, // red
-            {0, 1, 0}, // green
-            {0, 0, 1}, // blue
-            {1, 1, 1}  // white
+    float colourStore[4][3] = {
+            {0.2, -1, -1}, // red
+            {0.5, -1, 0.2}, // purcle
+            {0.5, 0.2, -1}, // turqoise
+            {0.5, 0.2, 0.2}, // dim white
     };
-    int tempStore[3] = {0,0,0}; // for light power while holding
-    int holdCount = 0;          // count how long button pressed
+    float tempStore[3] = {0,0,0}; // for light power while holding
+    void retrieveStore(colour);
+    void storeThis(colour);
     void half();
 
     typedef void (LightCtr::*PTR)();

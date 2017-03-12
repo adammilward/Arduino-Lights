@@ -4,20 +4,19 @@
 #include "IRremote.h"
 #include "Controller.h"
 
-
-IRrecv irrecv(CONFIG::IREC_PIN);      // from the ir decode library
+CONF_CH_UNO Config;
+IRrecv irrecv(Config.IREC_PIN);      // from the ir decode library
 decode_results Results; // from the ir decode library
 Controller RemoteCtr;      // handles the remotes
 
-int DELAY = CONFIG::DELAY;  // delay in miliseconds
+
+int DELAY = Config.DELAY;  // delay in miliseconds
 unsigned long waitMillisLights; // for timeing the next event.
 
 void setup() {
 	irrecv.enableIRIn(); // Start the receiver
 	// initialize serial communication at 9600 bits per second:
 	Serial.begin(9600);
-	Serial.println("Lights2");
-	Serial.println(Light::fMode);
 
 	//Timer0 is already used for millis() - we'll just interrupt somewhere
 	//in the middle and call the "Compare A" function below

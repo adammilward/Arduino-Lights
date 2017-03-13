@@ -4,13 +4,12 @@
 #include "IRremote.h"
 #include "Controller.h"
 
-CONF_CH_UNO Config;
-IRrecv irrecv(Config.IREC_PIN);      // from the ir decode library
+IRrecv irrecv(CONFIG::IREC_PIN);      // from the ir decode library
 decode_results Results; // from the ir decode library
 Controller RemoteCtr;      // handles the remotes
 
 
-int DELAY = Config.DELAY;  // delay in miliseconds
+int DELAY = CONFIG::DELAY;  // delay in miliseconds
 unsigned long waitMillisLights; // for timeing the next event.
 
 void setup() {

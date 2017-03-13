@@ -31,7 +31,7 @@ public:
     void interrupt();
     int holdCount = 0;          // count how long button pressed
 
-private:
+protected:
     enum colour { RED, GREEN, BLUE, WHITE };
     colour LightColour = colour::WHITE;
     float colourStore[4][3] = {

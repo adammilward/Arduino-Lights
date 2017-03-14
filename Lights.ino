@@ -9,7 +9,8 @@ decode_results Results; // from the ir decode library
 Controller RemoteCtr;      // handles the remotes
 
 
-int DELAY = CONFIG::DELAY;  // delay in miliseconds
+
+//int DELAY = CONFIG::DELAY;  // delay in miliseconds
 unsigned long waitMillisLights; // for timeing the next event.
 
 void setup() {
@@ -21,7 +22,7 @@ void setup() {
 	//in the middle and call the "Compare A" function below
 	OCR0A = 0x80;
 	TIMSK0 |= _BV(OCIE0A);
-	waitMillisLights = millis() + DELAY;
+	waitMillisLights = millis() + RemoteCtr.LightRemote.delay;
 
     delay(100);
     RemoteCtr.LightRemote.Red.set(0);
@@ -31,9 +32,9 @@ void setup() {
 
 // Interrupt is called once a millisecond,
 SIGNAL(TIMER0_COMPA_vect) {
-    if (RemoteCtr.LightRemote.Red.fMode != Light::STATIC) {
+    if (RemoteCtr.LightRemote.ctrMode != LightCtr::STATIC) {
         if ((long) (millis() - waitMillisLights) >= 0) {
-            waitMillisLights += DELAY;  // set the time for next interupt
+            waitMillisLights += RemoteCtr.LightRemote.delay;  // set the time for next interupt
             RemoteCtr.LightRemote.interrupt();
         }
     }

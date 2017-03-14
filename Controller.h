@@ -17,6 +17,8 @@ public:
     LightCtr LightRemote;
     void receive(unsigned long value);
 
+    FadeLightCtr Fader;
+
 private:
     enum Mode {LIGHTS, MP3};
     Mode mode;

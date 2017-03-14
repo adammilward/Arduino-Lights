@@ -9,15 +9,17 @@
 #include "Light.h"
 #include "Arduino.h"
 
-Light::fadeMode Light::fMode = Light::STATIC;
+Light::fadeMode Light::fMode = Light::EXP;
 
 Light::Light(
         int inPin,
+        int ID,
 		float inGain,
 		float inLower,
 		float inUpper)
 {
     pin = inPin;            // sets the pin
+    id = ID;
 	gain = inGain;
 	range = inUpper - inLower; // range between 0 and 1
 	lower = inLower * 254 + 1;
@@ -126,6 +128,9 @@ void Light::calcPow() {
 	}
 
 	power = temp * range + lower;
+	if (id != 0) {
+	    power = power * 0.6;
+	}
 
 	//Serial.print("fMode   ");
 	//Serial.print(fMode);
@@ -143,10 +148,80 @@ void Light::half() {
     calcPow();
     analogWrite(pin, (power));
     // randomly set the rate and directions
-
 }
-void Light::setFadeMode(fadeMode inMode){
-	fMode = inMode;
+void Light::flashOff(){
+    digitalWrite(pin, LOW);
+    delay(50);
+    analogWrite(pin, power);
 }
+void Light::flashOn(){
+    digitalWrite(pin, HIGH);
+    delay(50);
+    analogWrite(pin, power);
+}
+void Light::changeLower(int op, float change) {
+    /*Serial.println();
+    Serial.println();
+    Serial.print("lower: ");
+    Serial.println(lower);
+    Serial.print("range: ");
+    Serial.println(range);
+    Serial.println();*/
 
+    float tempLower = (lower - 1) /  254;
+    float tempUpper = range + tempLower;
+
+    tempLower = tempLower + (op * change);
+    if (tempLower < 0 ) {
+        tempLower = 0;
+    } else if (tempLower > 0.9) {
+        tempLower = 0.9;
+    }
+    if (tempUpper - tempLower < 0.1) {
+        tempUpper = tempLower + 0.1;
+    }
+    range = tempUpper - tempLower; // range between 0 and 1
+    lower = tempLower * 254 + 1;
+    base = 0;
+
+    /*Serial.print("lower: ");
+    Serial.println(lower);
+    Serial.print("range: ;");
+    Serial.println(range);
+    Serial.print("base: ");
+    Serial.println(base);*/
+}
+void Light::changeUpper(int op, float change) {
+   /* Serial.println();
+    Serial.println();
+    Serial.print("lower: ");
+    Serial.println(lower);
+    Serial.print("range: ");
+    Serial.println(range);
+    Serial.println();*/
+
+    float tempLower = (lower - 1) /  254;
+    float tempUpper = range + tempLower;
+
+    tempUpper = tempUpper + (op * change);
+
+    if (tempUpper > 1 ) {
+        tempUpper = 1;
+    } else if (tempUpper < 0.1) {
+        tempUpper = 0.1;
+    }
+    if (tempUpper - tempLower < 0.1) {
+        tempLower = tempUpper - 0.1;
+    }
+    range = tempUpper - tempLower; // range between 0 and 1
+    lower = tempLower * 254 + 1;
+    base = 1;
+
+   /* Serial.print("lower: ");
+    Serial.println(lower);
+    Serial.print("range: ");
+    Serial.println(range);
+    Serial.print("base: ");
+    Serial.println(base);*/
+}
 

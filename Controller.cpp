@@ -10,9 +10,10 @@
 Controller::Controller() {
     mode = LIGHTS;
     LightCtr LightRemote;
+    //FadeLightCtr Fader;
 }
 void Controller::receive(unsigned long inValue){
-    Serial.println();
+    //Serial.println();
     static int hCount;
     if (inValue == IR_HOLD) {
         hCount++;
@@ -39,8 +40,8 @@ void Controller::decode(unsigned long inValue, int inHCount){
         storedValue = inValue;
     } else {
         storedValue = 0;
-        Serial.print("value not recognised");
-        Serial.println(inValue, HEX);
+        //Serial.print("value not recognised");
+        //Serial.println(inValue, HEX);
     }
 }
 

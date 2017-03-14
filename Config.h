@@ -9,7 +9,7 @@
 #define CONFIG_H_
 class CONFIG {
 public:
-    static const int DELAY = 20;
+    static const int DELAY = 50;
     /* Chineese Uno */
     static const int RED_PIN = 10;
     static const int GREEN_PIN = 9;

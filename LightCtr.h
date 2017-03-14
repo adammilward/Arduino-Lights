@@ -7,7 +7,7 @@
 
 #include "Light.h"
 #include "Arduino.h"
-
+#include "FadeLightCtr.h"
 
 #ifndef LightCtr_H_
 #define LightCtr_H_
@@ -23,15 +23,17 @@ public:
     static Light Green;
     static Light Blue;
 
-    // mode for automatic fading
-    //enum fadeMode { STATIC, LIN, SIN, EXP, EXPSIN };
-    //static fadeMode fMode;
+    enum controllerMode { STATIC, FADE };
+    controllerMode ctrMode = controllerMode::FADE;
+
+    int delay = CONFIG::DELAY;
 
     bool action(unsigned long value);
     void interrupt();
     int holdCount = 0;          // count how long button pressed
 
-protected:
+private:
+
     enum colour { RED, GREEN, BLUE, WHITE };
     colour LightColour = colour::WHITE;
     float colourStore[4][3] = {
@@ -44,6 +46,7 @@ protected:
     void retrieveStore(colour);
     void storeThis(colour);
     void half();
+    void checkDelay();
 
     typedef void (LightCtr::*PTR)();
     unsigned long int codes[20] = {
@@ -53,18 +56,30 @@ protected:
         0xFFA857,   0xFF28D7,   0xFF6897,   0xFFE817,
         0xFF9867,   0xFF18E7,   0xFF58A7,   0xFFD827
     };
-    PTR actions[20] = {
+    PTR actions[2][20] = {
+        {   // first array for static mode
 &LightCtr::up,    &LightCtr::down,   &LightCtr::on,   &LightCtr::off   ,
 &LightCtr::red,   &LightCtr::green,  &LightCtr::blue, &LightCtr::white ,
 &LightCtr::orange,&LightCtr::yellow, &LightCtr::cyan, &LightCtr::purple,
 &LightCtr::jump3, &LightCtr::jump7,  &LightCtr::fade3,&LightCtr::fade4 ,
 &LightCtr::m1,    &LightCtr::m2,     &LightCtr::m3,   &LightCtr::m4    ,
+        },
+        {   // second array for fade mode
+&LightCtr::up,    &LightCtr::down,   &LightCtr::on,   &LightCtr::off   ,
+&LightCtr::red_f,   &LightCtr::green_f,  &LightCtr::blue, &LightCtr::white_f ,
+&LightCtr::orange_f,&LightCtr::yellow_f, &LightCtr::cyan, &LightCtr::purple_f,
+&LightCtr::jump3, &LightCtr::jump7,  &LightCtr::fade3,&LightCtr::fade4 ,
+&LightCtr::m1,    &LightCtr::m2,     &LightCtr::m3,   &LightCtr::m4    ,
+        }
     };
 void up();      void down();    void on();      void off();
 void red();     void green ();  void blue  ();  void white ();
 void orange();  void yellow();  void cyan  ();  void purple();
 void jump3 ();  void jump7 ();  void fade3 ();  void fade4 ();
 void m1    ();  void m2    ();  void m3    ();  void m4    ();
+
+void red_f();     void green_f ();                void white_f ();
+void orange_f();  void yellow_f();                void purple_f();
 
 };
 #endif /* LightCtr_H_ */

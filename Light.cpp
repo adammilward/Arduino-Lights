@@ -9,7 +9,7 @@
 #include "Light.h"
 #include "Arduino.h"
 
-Light::fadeMode Light::fMode = Light::EXP;
+Light::fadeMode Light::fMode = Light::EXPSIN;
 
 Light::Light(
         int inPin,
@@ -20,7 +20,7 @@ Light::Light(
 {
     pin = inPin;            // sets the pin
     id = ID;
-	gain = inGain;
+    gain = (inGain == 0)? randomize(): inGain;
 	range = inUpper - inLower; // range between 0 and 1
 	lower = inLower * 254 + 1;
 	base = inLower;
@@ -53,7 +53,7 @@ void Light::set(float setBase, bool flash) {
 			delay(20);              // delay for flash
 		}
 		power = 0;
-		Serial.println("LOW");
+		//Serial.println("LOW");
 		digitalWrite(pin, LOW);         //Set digital high
 	} else if (setBase > 1) {
 		base = 2;
@@ -62,22 +62,22 @@ void Light::set(float setBase, bool flash) {
 			delay(20);                  // delay for flash
 		}
 		power = 255;
-		Serial.println("HIGH");
+		//Serial.println("HIGH");
 		digitalWrite(pin, HIGH);           //Set digital high
 	} else {
 	    base = setBase;
 		exponant = 8 * base;
 		power = int(pow(2, exponant));
-		Serial.print("set base to ");
-		Serial.println(setBase);
+		//Serial.print("set base to ");
+		//Serial.println(setBase);
 		analogWrite(pin, (power));
 	}
-	Serial.print("fMode ");
+	/*Serial.print("fMode ");
 	Serial.print(fMode);
 	Serial.print("   base ");
 	Serial.print(base);
 	Serial.print("   power ");
-	Serial.println(power);
+	Serial.println(power);*/
 }
 
 // change power of light automatically
@@ -92,12 +92,13 @@ void Light::slide() {
 	} else if (base <= 0) {
 		shiftOp = 1;
 		base = 0;
+		randomize();
+		//Serial.println(gain*1000);
 	} else {
 	}
 	calcPow();	            // calculate led power 1 to 255
 	analogWrite(pin, (power));
 }
-
 // for fading lights, called by Slide()
 void Light::calcPow() {
 	float temp; // declare the temporary float for calculations
@@ -126,24 +127,26 @@ void Light::calcPow() {
 	default:
 		break;
 	}
-
 	power = temp * range + lower;
 	if (id != 0) {
-	    power = power * 0.6;
+	    power = power * 0.5;
 	}
-
 	//Serial.print("fMode   ");
 	//Serial.print(fMode);
 	//Serial.print(" base   ");
 	//Serial.print(base);
 	//Serial.print(" power   ");
 	//Serial.println(power);
-
+	//Serial.println(gain*1000);
+}
+float Light::randomize() {
+    // 0.001 to 0.008
+    return random(10, 80)/10000.0;
 }
 // called when resetting fade
 // sets the base to half, calculates the power of lights
 // and writes to pin
-void Light::half() {
+void Light::toHalf() {
     base = 0.5;
     calcPow();
     analogWrite(pin, (power));
@@ -151,12 +154,17 @@ void Light::half() {
 }
 void Light::flashOff(){
     digitalWrite(pin, LOW);
-    delay(50);
+    delay(20);
+    analogWrite(pin, power);
+}
+void Light::flashHalf(){
+    analogWrite(pin, 64);
+    delay(20);
     analogWrite(pin, power);
 }
 void Light::flashOn(){
     digitalWrite(pin, HIGH);
-    delay(50);
+    delay(20);
     analogWrite(pin, power);
 }
 void Light::changeLower(int op, float change) {
@@ -174,8 +182,10 @@ void Light::changeLower(int op, float change) {
     tempLower = tempLower + (op * change);
     if (tempLower < 0 ) {
         tempLower = 0;
-    } else if (tempLower > 0.9) {
-        tempLower = 0.9;
+        flashHalf();
+    } else if (tempLower > 0.7) {
+        tempLower = 0.7;
+        flashOn();
     }
     if (tempUpper - tempLower < 0.1) {
         tempUpper = tempLower + 0.1;
@@ -183,7 +193,7 @@ void Light::changeLower(int op, float change) {
     range = tempUpper - tempLower; // range between 0 and 1
     lower = tempLower * 254 + 1;
     base = 0;
-
+    flashOff();
     /*Serial.print("lower: ");
     Serial.println(lower);
     Serial.print("range: ;");
@@ -207,15 +217,18 @@ void Light::changeUpper(int op, float change) {
 
     if (tempUpper > 1 ) {
         tempUpper = 1;
+        flashOn();
     } else if (tempUpper < 0.1) {
         tempUpper = 0.1;
     }
     if (tempUpper - tempLower < 0.1) {
         tempLower = tempUpper - 0.1;
+        flashHalf();
     }
     range = tempUpper - tempLower; // range between 0 and 1
     lower = tempLower * 254 + 1;
     base = 1;
+    flashOff();
 
    /* Serial.print("lower: ");
     Serial.println(lower);

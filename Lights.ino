@@ -14,6 +14,7 @@ Controller RemoteCtr;      // handles the remotes
 unsigned long waitMillisLights; // for timeing the next event.
 
 void setup() {
+    randomSeed(analogRead(0)); // initialise for random numbers
 	irrecv.enableIRIn(); // Start the receiver
 	// initialize serial communication at 9600 bits per second:
 	Serial.begin(9600);

@@ -20,20 +20,20 @@ public:
 	int power;      // led Power 1 to 255 derived from base
 
 	Light(
-
 		int inPin,
 		int id,
-		float inGain = DEF_GAIN,
+		float inGain = 0,
 		float inLower = 0,
 		float inUpper = 1
 		);
 	void shift(int op, float shiftGain = DEF_GAIN);
 	void set(float setBase, bool flash = false);
 	void slide();
-	void half();
+	void toHalf();
 	void changeLower(int op, float change = 0.1);
 	void changeUpper(int op, float change = 0.1);
 	void flashOff();
+	void flashHalf();
 	void flashOn();
 
 private:
@@ -46,6 +46,7 @@ private:
 	float lower;        // lower limit 1 to 255
 	float range;        // range/multiplier 0 to 1
 
+	float randomize();
 	void calcPow();     // called from Slide()
 };
 

@@ -7,9 +7,9 @@
 
 #include "LightCtr.h"
 
-Light LightCtr::Red(CONFIG::RED_PIN, 0, 0.002);
-Light LightCtr::Green(CONFIG::GREEN_PIN, 1, 0.00181);
-Light LightCtr::Blue(CONFIG::BLUE_PIN, 2, 0.00173);
+Light LightCtr::Red(CONFIG::RED_PIN, 0);
+Light LightCtr::Green(CONFIG::GREEN_PIN, 1);
+Light LightCtr::Blue(CONFIG::BLUE_PIN, 2);
 
 
 LightCtr::LightCtr() {
@@ -42,7 +42,7 @@ void LightCtr::interrupt(){
         break;
     default:
 
-        Serial.print(Red.base * 100);
+        /*Serial.print(Red.base * 100);
         Serial.print(" ");
         Serial.print(Red.power);
         Serial.print(" ");
@@ -53,7 +53,7 @@ void LightCtr::interrupt(){
         Serial.print(Blue.base * 100);
         Serial.print(" ");
         Serial.print(Blue.power);
-        Serial.println(" ");
+        Serial.println(" ");*/
 
         counter = 0;
         break;
@@ -61,55 +61,55 @@ void LightCtr::interrupt(){
     counter++;
 }
 void LightCtr::retrieveStore(colour inColour){
-    Serial.print("retrieveStore Colour: ");
-    Serial.println(inColour);
+    //Serial.print("retrieveStore Colour: ");
+    //Serial.println(inColour);
     tempStore[0] = Red.base;
     tempStore[1] = Green.base;
     tempStore[2] = Blue.base;
-    Serial.print("Stored Values: ");
-    Serial.print(colourStore[inColour][0]);
-    Serial.print(colourStore[inColour][1]);
-    Serial.println(colourStore[inColour][2]);
+    //Serial.print("Stored Values: ");
+    //Serial.print(colourStore[inColour][0]);
+    //Serial.print(colourStore[inColour][1]);
+    //Serial.println(colourStore[inColour][2]);
     Red.set(colourStore[inColour][0]);
     Green.set(colourStore[inColour][1]);
     Blue.set(colourStore[inColour][2]);
     ctrMode = STATIC;
 }
 void LightCtr::storeThis(colour inColour){
-    Serial.print("store New Colour ");
-    Serial.println(inColour);
+    //Serial.print("store New Colour ");
+    //Serial.println(inColour);
     Red.set(tempStore[0]);
     Green.set(tempStore[1]);
     Blue.set(tempStore[2]);
     colourStore[inColour][0] = tempStore[0];
     colourStore[inColour][1] = tempStore[1];
     colourStore[inColour][2] = tempStore[2];
-    Serial.print("Stored Values: ");
-    Serial.print(colourStore[inColour][0]);
-    Serial.print(colourStore[inColour][1]);
-    Serial.println(colourStore[inColour][2]);
+    //Serial.print("Stored Values: ");
+    //Serial.print(colourStore[inColour][0]);
+    //Serial.print(colourStore[inColour][1]);
+    //Serial.println(colourStore[inColour][2]);
 }
 void LightCtr::up(){
-    Serial.println("up");
+    //Serial.println("up");
     Red.shift(+1);
     Green.shift(+1);
     Blue.shift(+1);
 }
 
 void LightCtr::down(){
-    Serial.println("down");
+    //Serial.println("down");
     Red.shift(-1);
     Green.shift(-1);
     Blue.shift(-1);
 }
 void LightCtr::on (){ //off
-    Serial.println("on");
+    //Serial.println("on");
     Red.set(1);
     Green.set(1);
     Blue.set(1);
 }
 void LightCtr::off (){ //off
-    Serial.println("off");
+    //Serial.println("off");
     Red.set(-1);
     Green.set(-1);
     Blue.set(-1);
@@ -125,16 +125,14 @@ void LightCtr::cyan  () { Blue.shift(-1); }
 void LightCtr::purple() { Blue.shift(-1); }
 
 void LightCtr::jump3 () {
-    Serial.println("jump3()");
+    //Serial.println("jump3()");
     if (holdCount == 0) {
         retrieveStore(RED);
     } else if (holdCount == 4) {
         storeThis(RED);
-    } else {
-        Serial.println("case 123");
     }
-    Serial.print("holdCount ");
-    Serial.println(holdCount);
+    //Serial.print("holdCount ");
+    //Serial.println(holdCount);
 }
 void LightCtr::jump7 () {
     if (holdCount == 0) {
@@ -160,34 +158,34 @@ void LightCtr::fade4 () {
 void LightCtr::m1    () {
     ctrMode = FADE;
     Light::fMode = Light::LIN;
-    Serial.println(Light::fMode);
-    Red.half();
-    Green.half();
-    Blue.half();
+    //Serial.println(Light::fMode);
+    Red.toHalf();
+    Green.toHalf();
+    Blue.toHalf();
 }
 void LightCtr::m2    () {
     ctrMode = FADE;
     Light::fMode = Light::SIN;
-    Serial.println(Light::fMode);
-    Red.half();
-    Green.half();
-    Blue.half();
+    //Serial.println(Light::fMode);
+    Red.toHalf();
+    Green.toHalf();
+    Blue.toHalf();
 }
 void LightCtr::m3    () {
     ctrMode = FADE;
     Light::fMode = Light::EXP;
-    Serial.println(Light::fMode);
-    Red.half();
-    Green.half();
-    Blue.half();
+    //Serial.println(Light::fMode);
+    Red.toHalf();
+    Green.toHalf();
+    Blue.toHalf();
 }
 void LightCtr::m4    () {
     ctrMode = FADE;
     Light::fMode = Light::EXPSIN;
-    Serial.println(Light::fMode);
-    Red.half();
-    Green.half();
-    Blue.half();
+    //Serial.println(Light::fMode);
+    Red.toHalf();
+    Green.toHalf();
+    Blue.toHalf();
 }
 
 void LightCtr::red_f(){
@@ -223,17 +221,16 @@ void LightCtr::purple_f(){
     //Serial.println(delay);
 };
 void LightCtr::checkDelay(){
-    int delayTime = 50;
-    if (delay > 2000) {
-        delay = 2000;
-        Red.flashOn();
-        Green.flashOn();
-        Blue.flashOn();
-    } else if (delay < 50) {
-        delay = 50;
-        Red.flashOn();
-        Green.flashOn();
-        Blue.flashOn();
+    if (delay > 1280) {
+        delay = 1280;
+        Red.flashHalf();
+        Green.flashHalf();
+        Blue.flashHalf();
+    } else if (delay < CONFIG::DELAY) {
+        delay = CONFIG::DELAY;
+        Red.flashHalf();
+        Green.flashHalf();
+        Blue.flashHalf();
     }
         Red.flashOff();
         Green.flashOff();

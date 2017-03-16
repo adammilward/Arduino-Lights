@@ -159,33 +159,33 @@ void LightCtr::m1    () {
     ctrMode = FADE;
     Light::fMode = Light::LIN;
     //Serial.println(Light::fMode);
-    Red.toHalf();
-    Green.toHalf();
-    Blue.toHalf();
+    Red.flashOff();
+    Green.flashOff();
+    Blue.flashOff();
 }
 void LightCtr::m2    () {
     ctrMode = FADE;
     Light::fMode = Light::SIN;
     //Serial.println(Light::fMode);
-    Red.toHalf();
-    Green.toHalf();
-    Blue.toHalf();
+    Red.flashOff();
+    Green.flashOff();
+    Blue.flashOff();
 }
 void LightCtr::m3    () {
     ctrMode = FADE;
     Light::fMode = Light::EXP;
     //Serial.println(Light::fMode);
-    Red.toHalf();
-    Green.toHalf();
-    Blue.toHalf();
+    Red.flashOff();
+    Green.flashOff();
+    Blue.flashOff();
 }
 void LightCtr::m4    () {
     ctrMode = FADE;
     Light::fMode = Light::EXPSIN;
     //Serial.println(Light::fMode);
-    Red.toHalf();
-    Green.toHalf();
-    Blue.toHalf();
+    Red.flashOff();
+    Green.flashOff();
+    Blue.flashOff();
 }
 
 void LightCtr::red_f(){

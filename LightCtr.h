@@ -7,7 +7,6 @@
 
 #include "Light.h"
 #include "Arduino.h"
-#include "FadeLightCtr.h"
 
 #ifndef LightCtr_H_
 #define LightCtr_H_

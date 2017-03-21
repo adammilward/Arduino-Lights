@@ -209,13 +209,13 @@ void LightCtr::yellow_f(){
     Blue.changeUpper(-1, 0.2);
 };
 void LightCtr::white_f(){
-    delay /= 4;
+    delay *= 4;
     checkDelay();
     //Serial.print("delay  ");
     //Serial.println(delay);
 };
 void LightCtr::purple_f(){
-    delay *= 4;
+    delay /= 4;
     checkDelay();
     //Serial.print("delay  ");
     //Serial.println(delay);
@@ -235,6 +235,6 @@ void LightCtr::checkDelay(){
         Red.flashOff();
         Green.flashOff();
         Blue.flashOff();
-        //Serial.println(delay);
+        Serial.println(delay);
 }
 

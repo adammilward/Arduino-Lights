@@ -10,7 +10,7 @@
 class CONFIG {
 public:
     static const int DELAY_MIN = 1;
-    static const int DELAY_MAX = 1024;
+    static const int DELAY_MAX = 256;
     /* Chineese Uno */
     static const int RED_PIN = 10;
     static const int GREEN_PIN = 9;

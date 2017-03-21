@@ -25,7 +25,7 @@ public:
     enum controllerMode { STATIC, FADE };
     controllerMode ctrMode = controllerMode::FADE;
 
-    int delay = CONFIG::DELAY;
+    int delay = CONFIG::DELAY_MAX;
 
     bool action(unsigned long value);
     void interrupt();

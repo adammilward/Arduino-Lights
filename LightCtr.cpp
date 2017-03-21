@@ -221,13 +221,13 @@ void LightCtr::purple_f(){
     //Serial.println(delay);
 };
 void LightCtr::checkDelay(){
-    if (delay > 1024) {
-        delay = 1280;
+    if (delay > CONFIG::DELAY_MAX) {
+        delay = CONFIG::DELAY_MAX;
         Red.flashHalf();
         Green.flashHalf();
         Blue.flashHalf();
-    } else if (delay < CONFIG::DELAY) {
-        delay = CONFIG::DELAY;
+    } else if (delay < CONFIG::DELAY_MIN) {
+        delay = CONFIG::DELAY_MIN;
         Red.flashHalf();
         Green.flashHalf();
         Blue.flashHalf();

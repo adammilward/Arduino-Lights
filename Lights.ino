@@ -21,8 +21,8 @@ void setup() {
 
 	//Timer0 is already used for millis() - we'll just interrupt somewhere
 	//in the middle and call the "Compare A" function below
-	OCR0A = 0x80;
-	TIMSK0 |= _BV(OCIE0A);
+	//OCR0A = 0x80;
+	//TIMSK0 |= _BV(OCIE0A);
 	waitMillisLights = millis() + RemoteCtr.LightRemote.delay;
 
     delay(100);
@@ -33,17 +33,22 @@ void setup() {
 
 // Interrupt is called once a millisecond,
 SIGNAL(TIMER0_COMPA_vect) {
-    if (RemoteCtr.LightRemote.ctrMode != LightCtr::STATIC) {
+/*    if (RemoteCtr.LightRemote.ctrMode != LightCtr::STATIC) {
         if ((long) (millis() - waitMillisLights) >= 0) {
             waitMillisLights += RemoteCtr.LightRemote.delay;  // set the time for next interupt
             RemoteCtr.LightRemote.interrupt();
         }
-    }
+    }*/
 }
 
 // The loop function is called in an endless loop
 void loop() {
-
+    if (RemoteCtr.LightRemote.ctrMode != LightCtr::STATIC) {
+        if ((long) (millis() - waitMillisLights) >= 0) {
+            waitMillisLights = millis() + RemoteCtr.LightRemote.delay;  // set the time for next interupt
+            RemoteCtr.LightRemote.interrupt();
+        }
+    }
 	if (irrecv.decode(&Results)) {
 	    RemoteCtr.receive(Results.value);
 		irrecv.resume(); // Receive the next value

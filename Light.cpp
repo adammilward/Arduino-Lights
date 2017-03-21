@@ -9,7 +9,7 @@
 #include "Light.h"
 #include "Arduino.h"
 
-Light::fadeMode Light::fMode = Light::EXPSIN;
+Light::fadeMode Light::fMode = Light::SIN;
 
 Light::Light(
         int inPin,
@@ -23,7 +23,7 @@ Light::Light(
     gain = (inGain == 0)? randomize(): inGain;
 	range = inUpper - inLower; // range between 0 and 1
 	lower = inLower * 254 + 1;
-	base = inLower;
+	base = inUpper;
 	set(2);
 }
 
@@ -64,7 +64,7 @@ void Light::set(float setBase, bool flash) {
 		//Serial.println("LOW");
 		digitalWrite(pin, LOW);         //Set digital high
 	} else if (setBase > 1) {
-		base = 2;
+		base = 1;
 		if (flash == true) {
 			analogWrite(pin, (128));    //flash to half brightness
 			delay(20);                  // delay for flash

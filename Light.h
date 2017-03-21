@@ -41,10 +41,11 @@ private:
 
 	int pin;            // the pin for this colour
 	int id;             // 0 = red 1 = green 2 = blue
-	int shiftOp = 1;    //  1 or -1  controls the direction of shift
+	// below are only used for fading
+	int shiftOp = 1;    // 1 or -1  controls the direction of shift
 	float gain;         // for fading the lights <= 0.002
 	float lower;        // lower limit 1 to 255
-	float range;        // range/multiplier 0 to 1
+	float range;        // range/multiplier 0 to
 
 	float randomize();
 	void calcPow();     // called from Slide()

@@ -17,9 +17,9 @@ LightCtr::LightCtr() {
 }
 bool LightCtr::action(unsigned long inValue){
     for (int i = 0; i < 20; i++) {
-        //Serial.println(i);
-        //Serial.print("    ");
         //Serial.print(ctrMode);
+        //Serial.print("    ");
+        //Serial.println(i);
         if (codes[i] == inValue) {
             (this->*actions[ctrMode][i])();
             return true;
@@ -189,39 +189,39 @@ void LightCtr::m4    () {
 }
 
 void LightCtr::red_f(){
-    Red.changeLower(+1, 0.1);
-    Green.changeLower(+1, 0.1);
-    Blue.changeLower(+1, 0.1);
+    Red.changeLower(+1, 0.2);
+    Green.changeLower(+1, 0.2);
+    Blue.changeLower(+1, 0.2);
 };
 void LightCtr::orange_f (){
-    Red.changeLower(-1, 0.1);
-    Green.changeLower(-1, 0.1);
-    Blue.changeLower(-1, 0.1);
+    Red.changeLower(-1, 0.2);
+    Green.changeLower(-1, 0.2);
+    Blue.changeLower(-1, 0.2);
 };
 void LightCtr::green_f (){
-    Red.changeUpper(+1, 0.1);
-    Green.changeUpper(+1, 0.1);
-    Blue.changeUpper(+1, 0.1);
+    Red.changeUpper(+1, 0.2);
+    Green.changeUpper(+1, 0.2);
+    Blue.changeUpper(+1, 0.2);
 };
 void LightCtr::yellow_f(){
-    Red.changeUpper(-1, 0.1);
-    Green.changeUpper(-1, 0.1);
-    Blue.changeUpper(-1, 0.1);
+    Red.changeUpper(-1, 0.2);
+    Green.changeUpper(-1, 0.2);
+    Blue.changeUpper(-1, 0.2);
 };
 void LightCtr::white_f(){
-    delay *= 2;
+    delay /= 4;
     checkDelay();
     //Serial.print("delay  ");
     //Serial.println(delay);
 };
 void LightCtr::purple_f(){
-    delay /= 2;
+    delay *= 4;
     checkDelay();
     //Serial.print("delay  ");
     //Serial.println(delay);
 };
 void LightCtr::checkDelay(){
-    if (delay > 1280) {
+    if (delay > 1024) {
         delay = 1280;
         Red.flashHalf();
         Green.flashHalf();
@@ -235,5 +235,6 @@ void LightCtr::checkDelay(){
         Red.flashOff();
         Green.flashOff();
         Blue.flashOff();
+        //Serial.println(delay);
 }
 

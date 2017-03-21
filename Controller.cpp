@@ -13,7 +13,7 @@ Controller::Controller() {
     //FadeLightCtr Fader;
 }
 void Controller::receive(unsigned long inValue){
-    //Serial.println();
+    //Serial.println(inValue, HEX);
     static int hCount;
     if (inValue == IR_HOLD) {
         hCount++;

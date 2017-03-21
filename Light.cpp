@@ -31,6 +31,10 @@ Light::Light(
 // int op = -1 or 1
 // float shiftGain < 1
 void Light::shift(int op, float shiftGain) {
+    //Serial.print("op");
+    //Serial.println(op);
+    //Serial.print("shiftGain");
+    //Serial.println(shiftGain);
 	float setBase = base + op * shiftGain;
 	set(setBase, true);
 }
@@ -39,15 +43,19 @@ void Light::shift(int op, float shiftGain) {
 // float setBase <=1 (0 is lowest possible, < 0 is off);
 // bool flash, true if you want to flash for extremes (0 or 1)
 void Light::set(float setBase, bool flash) {
+    //Serial.print("setBase");
+    //Serial.println(setBase);
     // default is -2 and lights are set from what ever the base is set to
 	if (setBase > -2) {
 		base = setBase;
 	}
+    //Serial.print("base");
+    //Serial.println(base);
 
 	float exponant;
 
 	if (setBase < 0) {
-		base = -1;
+		base = 0;
 		if (flash == true) {
 			analogWrite(pin, (64)); //flash to eighth brightness
 			delay(20);              // delay for flash
@@ -72,12 +80,12 @@ void Light::set(float setBase, bool flash) {
 		//Serial.println(setBase);
 		analogWrite(pin, (power));
 	}
-	/*Serial.print("fMode ");
-	Serial.print(fMode);
-	Serial.print("   base ");
-	Serial.print(base);
-	Serial.print("   power ");
-	Serial.println(power);*/
+	//Serial.print("fMode ");
+	//Serial.print(fMode);
+	//Serial.print("   base ");
+	//Serial.print(base);
+	//Serial.print("   power ");
+	//Serial.println(power);
 }
 
 // change power of light automatically
@@ -92,8 +100,8 @@ void Light::slide() {
 	} else if (base <= 0) {
 		shiftOp = 1;
 		base = 0;
-		randomize();
-		//Serial.println(gain*1000);
+		gain = randomize();
+		//Serial.println(gain*10000);
 	} else {
 	}
 	calcPow();	            // calculate led power 1 to 255
@@ -128,9 +136,19 @@ void Light::calcPow() {
 		break;
 	}
 	power = temp * range + lower;
+/*    Serial.print(power);
+    Serial.print("    ");
+    Serial.print(temp);
+    Serial.print("    ");
+    Serial.print(range);
+    Serial.print("    ");
+    Serial.print(lower);
+    Serial.println("    ");*/
+
 	if (id != 0) {
-	    power = power * 0.5;
+	    power = power * 0.5 + 0.5;
 	}
+
 	//Serial.print("fMode   ");
 	//Serial.print(fMode);
 	//Serial.print(" base   ");
@@ -141,7 +159,7 @@ void Light::calcPow() {
 }
 float Light::randomize() {
     // 0.001 to 0.008
-    return random(10, 80)/10000.0;
+    return random(2, 20)/10000.0;
 }
 // called when resetting fade
 // sets the base to half, calculates the power of lights
@@ -183,12 +201,12 @@ void Light::changeLower(int op, float change) {
     if (tempLower < 0 ) {
         tempLower = 0;
         flashHalf();
-    } else if (tempLower > 0.7) {
-        tempLower = 0.7;
+    } else if (tempLower > 0.6) {
+        tempLower = 0.6;
         flashOn();
     }
-    if (tempUpper - tempLower < 0.1) {
-        tempUpper = tempLower + 0.1;
+    if (tempUpper - tempLower < 0.2) {
+        tempUpper = tempLower + 0.2;
     }
     range = tempUpper - tempLower; // range between 0 and 1
     lower = tempLower * 254 + 1;
@@ -218,11 +236,11 @@ void Light::changeUpper(int op, float change) {
     if (tempUpper > 1 ) {
         tempUpper = 1;
         flashOn();
-    } else if (tempUpper < 0.1) {
-        tempUpper = 0.1;
+    } else if (tempUpper < 0.2) {
+        tempUpper = 0.2;
     }
-    if (tempUpper - tempLower < 0.1) {
-        tempLower = tempUpper - 0.1;
+    if (tempUpper - tempLower < 0.2) {
+        tempLower = tempUpper - 0.2;
         flashHalf();
     }
     range = tempUpper - tempLower; // range between 0 and 1

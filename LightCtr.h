@@ -23,9 +23,9 @@ public:
     static Light Blue;
 
     enum controllerMode { STATIC, FADE };
-    controllerMode ctrMode = controllerMode::FADE;
+    controllerMode ctrMode = controllerMode::STATIC;
 
-    int delay = CONFIG::DELAY_MAX;
+    int delay = CONFIG::DELAY_MAX/4;
 
     bool action(unsigned long value);
     void interrupt();

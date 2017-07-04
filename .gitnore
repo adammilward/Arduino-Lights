@@ -1,6 +1,3 @@
-
-.cproject
-.ino.cpp
 .project
-/*
-!/libraries
+.cproject
+.settings/

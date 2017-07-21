@@ -37,8 +37,8 @@ private:
     colour LightColour = colour::WHITE;
     float colourStore[4][3] = {
             {0.2, -1, -1}, // red
-            {0.5, -1, 0.2}, // purcle
-            {0.5, 0.2, -1}, // turqoise
+            {0.5, -1, 0.2}, // purple
+            {0.5, 0.2, -1}, // turcoise
             {0.5, 0.2, 0.2}, // dim white
     };
     float tempStore[3] = {0,0,0}; // for light power while holding

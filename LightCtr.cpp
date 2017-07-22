@@ -42,7 +42,7 @@ void LightCtr::interrupt(){
         break;
     default:
 
-        /*Serial.print(Red.base * 100);
+/*        Serial.print(Red.base * 100);
         Serial.print(" ");
         Serial.print(Red.power);
         Serial.print(" ");

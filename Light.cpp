@@ -24,10 +24,10 @@ Light::Light(
 	range = inUpper - inLower; // range between 0 and 1
 	lower = inLower * 254 + 1;
 	base = inUpper;
-	set(2);
+	//set(2);
 }
 
-//  change change power by a given gain or default
+// change change power by a given gain or default
 // int op = -1 or 1
 // float shiftGain < 1
 void Light::shift(int op, float shiftGain) {
@@ -149,13 +149,13 @@ void Light::calcPow() {
 	    power = power * 0.5 + 0.5;
 	}
 
-	//Serial.print("fMode   ");
-	//Serial.print(fMode);
-	//Serial.print(" base   ");
-	//Serial.print(base);
-	//Serial.print(" power   ");
-	//Serial.println(power);
-	//Serial.println(gain*1000);
+//	Serial.print("fMode   ");
+//	Serial.print(fMode);
+//	Serial.print(" base   ");
+//	Serial.print(base);
+//	Serial.print(" power   ");
+//	Serial.println(power);
+//	Serial.println(gain*1000);
 }
 float Light::randomize() {
     // 0.001 to 0.008

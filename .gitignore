@@ -1,8 +1,5 @@
-
-/.cproject
-
-/.project
-
-.settings
-
-Release
+.project
+.cproject
+.settings/
+Release/
+/.ino.cpp

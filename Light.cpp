@@ -24,7 +24,6 @@ Light::Light(
 	range = inUpper - inLower; // range between 0 and 1
 	lower = inLower * 254 + 1;
 	base = inUpper;
-	//set(2);
 }
 
 // change change power by a given gain or default
@@ -54,8 +53,8 @@ void Light::set(float setBase, bool flash) {
 
 	float exponant;
 
-	if (setBase < 0) {
-		base = 0;
+	if (setBase < -0.001) {
+		base = -0.001;
 		if (flash == true) {
 			analogWrite(pin, (64)); //flash to eighth brightness
 			delay(20);              // delay for flash

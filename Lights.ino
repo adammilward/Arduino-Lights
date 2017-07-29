@@ -5,7 +5,7 @@
 
 IRrecv irrecv(CONFIG::IREC_PIN);      // from the ir decode library
 decode_results Results; // from the ir decode library
-Controller RemoteCtr;      // handles the remotes
+Controller MasterCtr;      // handles the remotes
 
 
 
@@ -22,12 +22,12 @@ void setup() {
 	//in the middle and call the "Compare A" function below
 	//OCR0A = 0x80;
 	//TIMSK0 |= _BV(OCIE0A);
-	waitMillisLights = millis() + RemoteCtr.LightRemote.delay;
+	waitMillisLights = millis() + MasterCtr.LightRemote.delay;
 
     delay(100);
-    RemoteCtr.LightRemote.Red.set(1);
-    RemoteCtr.LightRemote.Green.set(0.5);
-    RemoteCtr.LightRemote.Blue.set(0);
+    MasterCtr.LightRemote.Red.set(1);
+    MasterCtr.LightRemote.Green.set(0.5);
+    MasterCtr.LightRemote.Blue.set(0);
 }
 
 // Interrupt is called once a millisecond,
@@ -42,14 +42,14 @@ SIGNAL(TIMER0_COMPA_vect) {
 
 // The loop function is called in an endless loop
 void loop() {
-    if (RemoteCtr.LightRemote.ctrMode != LightCtr::STATIC) {
+    if (MasterCtr.LightRemote.ctrMode != LightCtr::STATIC) {
         if ((long) (millis() - waitMillisLights) >= 0) {
-            waitMillisLights = millis() + RemoteCtr.LightRemote.delay;  // set the time for next interupt
-            RemoteCtr.LightRemote.interrupt();
+            waitMillisLights = millis() + MasterCtr.LightRemote.delay;  // set the time for next interupt
+            MasterCtr.LightRemote.interrupt();
         }
     }
 	if (irrecv.decode(&Results)) {
-	    RemoteCtr.receive(Results.value);
+	    MasterCtr.receive(Results.value);
 		irrecv.resume(); // Receive the next value
 	}
 }

@@ -16,9 +16,10 @@ public:
     Controller();
     const unsigned long int IR_HOLD = 0xFFFFFFFF;
     LightCtr LightRemote;
+    static SoftwareSerial BTs;
     void irReceive(unsigned long value);
     void serialReceive(String data);
-    static SoftwareSerial BTs;
+
 
 private:
     enum Mode {LIGHTS, MP3};

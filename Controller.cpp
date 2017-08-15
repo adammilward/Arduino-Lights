@@ -12,6 +12,7 @@ Controller::Controller() {
     LightCtr LightRemote;
     //FadeLightCtr Fader;
 }
+
 void Controller::irReceive(unsigned long inValue){
     //Serial.println(inValue, HEX);
     static int hCount;
@@ -50,7 +51,7 @@ void Controller::serialReceive(String data) {
             BTserial.println(command[2]);
             BTserial.println(command[3]);
             BTserial.println(command[4]);*/
-            //BTs.println("hello World");
+            BTs.println("hello World");
 }
 
 void Controller::decode(unsigned long inValue, int inHCount){

@@ -6,6 +6,7 @@
  */
 #include "Arduino.h"
 #include "LightCtr.h"
+#include "SoftwareSerial.h"
 
 #ifndef REMOTERECEIVE_H_
 #define REMOTERECEIVE_H_
@@ -15,7 +16,9 @@ public:
     Controller();
     const unsigned long int IR_HOLD = 0xFFFFFFFF;
     LightCtr LightRemote;
-    void receive(unsigned long value);
+    void irReceive(unsigned long value);
+    void serialReceive(String data);
+    static SoftwareSerial BTs;
 
 private:
     enum Mode {LIGHTS, MP3};

@@ -5,16 +5,22 @@
  *      Author: Adam Milward
  */
 
+#include "Arduino.h"
+
 #ifndef CONFIG_H_
 #define CONFIG_H_
 class CONFIG {
 public:
+
+    static const byte BT_RX = 12;
+    static const byte BT_TX = 13;
+
     static const int DELAY_MIN = 1;
     static const int DELAY_MAX = 256;
-    /* Uno */                       //   ________
-    static const int RED_PIN = 2;  //  |   __   |
-    static const int GREEN_PIN = 3;//  |  /  \  |
-    static const int BLUE_PIN = 4;  //  | |    | |
+    /* Uno */                        //   ________
+    static const int RED_PIN = 2;    //  |   __   |
+    static const int GREEN_PIN = 3;  //  |  /  \  |
+    static const int BLUE_PIN = 4;   //  | |    | |
     static const int IREC_PIN = 12;  //  out  0  v+
 
     /* Mega

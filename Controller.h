@@ -7,6 +7,7 @@
 #include "Arduino.h"
 #include "LightCtr.h"
 #include "SoftwareSerial.h"
+#include "Config.h"
 
 #ifndef REMOTERECEIVE_H_
 #define REMOTERECEIVE_H_
@@ -24,8 +25,11 @@ public:
 private:
     enum Mode {LIGHTS, MP3};
     Mode mode;
-    unsigned long int storedValue = 0;  // for sending when hold is pressed
-    void decode(unsigned long, int);
+    String command[CONFIG::COMMAND_LENGTH];
+    String lastCommand;
+    unsigned long int storedCode = 0;  // for sending when hold is pressed
+    void irDecode(unsigned long, int);
+    bool processSerial();
 
 };
 #endif /* REMOTERECEIVE_H_ */

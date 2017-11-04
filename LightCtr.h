@@ -27,7 +27,8 @@ public:
 
     int delay = CONFIG::DELAY_MIN*2;
 
-    bool action(unsigned long value);
+    bool actionSerial(String*, int);
+    bool actionRemote(unsigned long);
     void interrupt();
     int holdCount = 0;          // count how long button pressed
 
@@ -47,7 +48,23 @@ private:
     void half();
     void checkDelay();
 
-    typedef void (LightCtr::*PTR)();
+    String remoteCommands[20] = {
+        "up",   "down",   "on",   "off",
+        "red",   "green",   "blue",   "white",
+        "orange",   "yellow",   "cyan",   "purple",
+        "j1",   "j2",   "j3",   "j4",
+        "m1",   "m1",   "m1",   "m1"
+    };
+    String serialCommands[100][2] = {
+            {"all", "up"},
+            {"all", "down"},
+            {"red", "up"},
+            {"red", "down"},
+            {"geen", "up"},
+            {"green", "down"},
+            {"blue", "up"},
+            {"blue", "down"}
+    };
     unsigned long int codes[20] = {
         0xFFA05F,   0xFF20DF,   0x000001,   0xFFE01F,
         0xFF906F,   0xFF10EF,   0xFF50AF,   0xFFD02F,
@@ -55,6 +72,9 @@ private:
         0xFFA857,   0xFF28D7,   0xFF6897,   0xFFE817,
         0xFF9867,   0xFF18E7,   0xFF58A7,   0xFFD827
     };
+
+    // declare the function pointer
+    typedef void (LightCtr::*PTR)();
     PTR actions[2][20] = {
         {   // first array for static mode
 &LightCtr::up,    &LightCtr::down,   &LightCtr::on,   &LightCtr::off   ,

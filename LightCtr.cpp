@@ -15,7 +15,31 @@ Light LightCtr::Blue(CONFIG::BLUE_PIN, 2);
 LightCtr::LightCtr() {
 
 }
-bool LightCtr::action(unsigned long inValue){
+bool LightCtr::actionSerial(String* commandPtr, int commandLength){
+    Serial.println(*(commandPtr));
+    Serial.println(*(commandPtr + 0));
+    Serial.println(*(commandPtr + 1));
+    for (int i = 0; i < 20; i++) {
+        Serial.print(ctrMode);
+        Serial.print("    ");
+        Serial.println(i);
+        if (remoteCommands[i] == *(commandPtr + 0)) {
+            (this->*actions[ctrMode][i])();
+            return true;
+        }
+    }
+    for (unsigned int i = 0; i < (sizeof(serialCommands)/sizeof(String)); i++) {
+        Serial.println(i); // don't know why this fails if it is removed
+        // todo add nested loop to look for successive commands
+        if (serialCommands[i][1] == *(commandPtr + 0)) {
+            (this->*actions[ctrMode][i])();
+            return true;
+        }
+    }
+    Serial.println("command not found");
+    return false;
+}
+bool LightCtr::actionRemote(unsigned long inValue){
     for (int i = 0; i < 20; i++) {
         //Serial.print(ctrMode);
         //Serial.print("    ");

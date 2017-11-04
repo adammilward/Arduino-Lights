@@ -14,6 +14,7 @@ public:
 
     static const byte BT_RX = 12;
     static const byte BT_TX = 13;
+    static const byte COMMAND_LENGTH = 5;
 
     static const int DELAY_MIN = 1;
     static const int DELAY_MAX = 256;

@@ -3,13 +3,14 @@
 #include "IRremote.h"
 #include "Controller.h"
 #include "SoftwareSerial.h"
+#include "SerialCom.h"
 
 IRrecv irrecv(CONFIG::IREC_PIN);      // from the ir decode library
 decode_results Results; // from the ir decode library
-SoftwareSerial BTserial(CONFIG::BT_RX, CONFIG::BT_TX); // RX | TX
+SerialCom Com;
 
-Controller MasterCtr;      // handles the remotes
-SoftwareSerial Controller::BTs(CONFIG::BT_RX, CONFIG::BT_TX);
+Controller MasterCtr(&Com);      // handles the remotes
+
 
 // Connect the HC-05 TX to the Arduino RX on pin 12.
 // Connect the HC-05 RX to the Arduino TX on pin 3 through a voltage divider.
@@ -23,8 +24,8 @@ void setup() {
 	// initialize serial communication at 9600 bits per second:
 	Serial.begin(9600);
     Serial.println("ready to recieve");
-	Controller::BTs.begin(9600);
-    Controller::BTs.println("ready to recieve");
+	SerialCom::BT.begin(9600);
+    SerialCom::BT.println("ready to recieve");
 
 	//Timer0 is already used for millis() - we'll just interrupt somewhere
 	//in the middle and call the "Compare A" function below
@@ -67,10 +68,13 @@ void loop() {
 	}
 
 	// run Serial commands
-	while (Serial.available())
-	    {
-	        String command = Serial.readStringUntil('\n');
-	        MasterCtr.serialReceive(command);
-	    }
+	while (Serial.available()) {
+        String command = Serial.readStringUntil('\n');
+        MasterCtr.serialReceive(command);
+    }
+    while (Com.BT.available()) {
+        String command = Serial.readStringUntil('\n');
+        MasterCtr.serialReceive(command);
+    }
 }
 

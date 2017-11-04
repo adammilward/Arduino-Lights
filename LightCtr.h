@@ -48,14 +48,14 @@ private:
     void half();
     void checkDelay();
 
-    String remoteCommands[20] = {
+    String remoteAlias[20] = {
         "up",   "down",   "on",   "off",
         "red",   "green",   "blue",   "white",
         "orange",   "yellow",   "cyan",   "purple",
         "j1",   "j2",   "j3",   "j4",
         "m1",   "m1",   "m1",   "m1"
     };
-    String serialCommands[100][2] = {
+    String serialCommands[8][2] = {
             {"all", "up"},
             {"all", "down"},
             {"red", "up"},

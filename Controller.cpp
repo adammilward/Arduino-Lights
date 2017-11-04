@@ -7,7 +7,8 @@
 
 #include "Controller.h"
 
-Controller::Controller() {
+Controller::Controller(SerialCom* inComPtr) {
+    comPtr = *inComPtr;
     mode = LIGHTS;
     LightCtr LightRemote;
     //FadeLightCtr Fader;
@@ -15,31 +16,29 @@ Controller::Controller() {
 
 
 void Controller::serialReceive(String data) {
-    String newCommand[CONFIG::COMMAND_LENGTH];
+    String newCommand[CONFIG::COMMAND_MAX_LENGTH];
     int wordIndex = 0;
     data.trim();
 
     int charIndex = data.indexOf(' ');
-    while (charIndex > -1) {
+    while (charIndex > -1 && wordIndex <= CONFIG::COMMAND_MAX_LENGTH-1) {
+        Serial.println(data);
         newCommand[wordIndex] = data.substring(0, charIndex);
         data.remove(0, charIndex + 1);
         data.trim();
         wordIndex++;
         charIndex = data.indexOf(' ');
+        Serial.println(charIndex);
     }
     // take the last word and add it to the array
     newCommand[wordIndex] = data;
-
-    if (LightRemote.actionSerial(&newCommand[0], CONFIG::COMMAND_LENGTH)) {
+    
+    for ( int i = 0 ; i <= wordIndex ; i++ ) Serial.println(newCommand[i]);
+    
+    /*if (LightRemote.actionSerial(&newCommand[0], wordIndex+1)) {
         //record if true
-        byte i = CONFIG::COMMAND_LENGTH;
+        byte i = CONFIG::COMMAND_MAX_LENGTH;
         while ( i-- ) *( command + i ) = *( newCommand + i );
-    }
-/*    for (int i = 0; i<5; i++) {
-        Serial.println(command[i]);
-        if (LightRemote.actionSerial(command[i])) {
-            continue;
-        }
     }*/
 }
 

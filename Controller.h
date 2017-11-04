@@ -8,6 +8,7 @@
 #include "LightCtr.h"
 #include "SoftwareSerial.h"
 #include "Config.h"
+#include "SerialCom.h"
 
 #ifndef REMOTERECEIVE_H_
 #define REMOTERECEIVE_H_
@@ -15,6 +16,8 @@
 class Controller {
 public:
     Controller();
+    Controller(SerialCom*);
+    SerialCom comPtr;
     const unsigned long int IR_HOLD = 0xFFFFFFFF;
     LightCtr LightRemote;
     static SoftwareSerial BTs;
@@ -25,7 +28,7 @@ public:
 private:
     enum Mode {LIGHTS, MP3};
     Mode mode;
-    String command[CONFIG::COMMAND_LENGTH];
+    String command[CONFIG::COMMAND_MAX_LENGTH];
     String lastCommand;
     unsigned long int storedCode = 0;  // for sending when hold is pressed
     void irDecode(unsigned long, int);

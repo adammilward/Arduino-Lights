@@ -30,5 +30,12 @@ public:
     static const int BLUE_PIN = 6;
     static const int IREC_PIN = 12;
      */
+
+    static constexpr float A0_FACTOR = 0.02583;
+    static constexpr float A1_FACTOR = 0.01473;
+    static constexpr float A2_FACTOR = 0.01461;
+    static constexpr float A3_FACTOR = 0.01467;
+    static constexpr float A4_FACTOR = 0.01460;
+
 };
 #endif /* CONFIG_H_ */

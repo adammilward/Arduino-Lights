@@ -14,6 +14,52 @@ SerialCom::SerialCom() {
 
 }
 
+void SerialCom::out(String word1) {
+    outLn(word1);
+}
+void SerialCom::out(String word1, int in2) {
+    outWd(word1);
+    outLn(in2);
+}
+void SerialCom::out(String word1, String word2) {
+    outWd(word1);
+    outLn(word2);
+}
+void SerialCom::out(String word1, String word2, String word3) {
+    outWd(word1);
+    outWd(word2);
+    outLn(word3);
+}
+
+bool SerialCom::actionSerial(String data) {
+    debug("SerialCom::actionSerial");
+    if (data.indexOf("debug") != -1) {
+        if(data.indexOf("off") != -1) {
+            mode = NORMAL;
+            out("debug output disabled");
+            return true;
+        } else {
+            mode = DEBUG_;
+            out("debug mode enabled");
+            return true;
+        }
+    } else if (data.indexOf("normal") != -1) {
+        mode = NORMAL;
+        out("debug output disabled");
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void SerialCom::debug(String word1) {
+    if (mode == DEBUG_) outLn(word1);
+}
+
+void SerialCom::outLn(char output) {
+    Serial.println(output);
+    BT.println(output);
+}
 void SerialCom::outLn(String output) {
     Serial.println(output);
     BT.println(output);

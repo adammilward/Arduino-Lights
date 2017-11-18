@@ -7,6 +7,7 @@
 
 #include "Light.h"
 #include "Arduino.h"
+#include "SerialCom.h"
 
 #ifndef LightCtr_H_
 #define LightCtr_H_
@@ -17,17 +18,21 @@
 class LightCtr {
 public:
     LightCtr();
+    LightCtr(SerialCom&);
 
     static Light Red;
     static Light Green;
     static Light Blue;
+
+    SerialCom com;
 
     enum controllerMode { STATIC, FADE };
     controllerMode ctrMode = controllerMode::STATIC;
 
     int delay = CONFIG::DELAY_MIN*2;
 
-    bool actionSerial(String*, int);
+    bool actionSerial(String);
+    bool actionSerial(String[], int);
     bool actionRemote(unsigned long);
     void interrupt();
     int holdCount = 0;          // count how long button pressed

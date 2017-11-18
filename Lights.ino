@@ -7,9 +7,9 @@
 
 IRrecv irrecv(CONFIG::IREC_PIN);      // from the ir decode library
 decode_results Results; // from the ir decode library
-SerialCom Com;
+SerialCom com;
 
-Controller MasterCtr(&Com);      // handles the remotes
+Controller masterCtr(com);      // handles the remotes
 
 
 // Connect the HC-05 TX to the Arduino RX on pin 12.
@@ -31,19 +31,20 @@ void setup() {
 	//in the middle and call the "Compare A" function below
 	//OCR0A = 0x80;
 	//TIMSK0 |= _BV(OCIE0A);
-	waitMillisLights = millis() + MasterCtr.LightRemote.delay;
+	waitMillisLights = millis() + masterCtr.lightRemote.delay;
 
     delay(100);
-    MasterCtr.LightRemote.Red.set(1);
-    MasterCtr.LightRemote.Green.set(0.5);
-    MasterCtr.LightRemote.Blue.set(0);
+    masterCtr.lightRemote.Red.set(1);
+    masterCtr.lightRemote.Green.set(0.5);
+    masterCtr.lightRemote.Blue.set(0);
 }
 
 // Interrupt is called once a millisecond,
 SIGNAL(TIMER0_COMPA_vect) {
 /*    if (RemoteCtr.LightRemote.ctrMode != LightCtr::STATIC) {
         if ((long) (millis() - waitMillisLights) >= 0) {
-            waitMillisLights += RemoteCtr.LightRemote.delay;  // set the time for next interupt
+            // set the time for next interupt
+            waitMillisLights += RemoteCtr.LightRemote.delay;
             RemoteCtr.LightRemote.interrupt();
         }
     }*/
@@ -54,27 +55,28 @@ SIGNAL(TIMER0_COMPA_vect) {
 void loop() {
 
     // run fading
-    if (MasterCtr.LightRemote.ctrMode != LightCtr::STATIC) {
+    if (masterCtr.lightRemote.ctrMode != LightCtr::STATIC) {
         if ((long) (millis() - waitMillisLights) >= 0) {
-            waitMillisLights = millis() + MasterCtr.LightRemote.delay;  // set the time for next interupt
-            MasterCtr.LightRemote.interrupt();
+            // set the time for next interupt
+            waitMillisLights = millis() + masterCtr.lightRemote.delay;
+            masterCtr.lightRemote.interrupt();
         }
     }
 
-    // runn IR Commandes
+    // run IR Commandes
 	if (irrecv.decode(&Results)) {
-	    MasterCtr.irReceive(Results.value);
+	    masterCtr.irReceive(Results.value);
 		irrecv.resume(); // Receive the next value
 	}
 
 	// run Serial commands
 	while (Serial.available()) {
         String command = Serial.readStringUntil('\n');
-        MasterCtr.serialReceive(command);
+        masterCtr.serialReceive(command);
     }
-    while (Com.BT.available()) {
+    while (com.BT.available()) {
         String command = Serial.readStringUntil('\n');
-        MasterCtr.serialReceive(command);
+        masterCtr.serialReceive(command);
     }
 }
 

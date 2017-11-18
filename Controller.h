@@ -9,30 +9,37 @@
 #include "SoftwareSerial.h"
 #include "Config.h"
 #include "SerialCom.h"
+#include "StatusCtr.h"
 
 #ifndef REMOTERECEIVE_H_
 #define REMOTERECEIVE_H_
 
 class Controller {
 public:
-    Controller();
-    Controller(SerialCom*);
-    SerialCom comPtr;
+    Controller(SerialCom&);
+    SerialCom com;
     const unsigned long int IR_HOLD = 0xFFFFFFFF;
-    LightCtr LightRemote;
+    LightCtr lightRemote;
+    StatusCtr statusCtr;
     static SoftwareSerial BTs;
     void irReceive(unsigned long value);
     void serialReceive(String data);
 
-
 private:
-    enum Mode {LIGHTS, MP3};
-    Mode mode;
-    String command[CONFIG::COMMAND_MAX_LENGTH];
-    String lastCommand;
+
+    enum IRMode {IR_LIGHTS, IR_MP3};
+    IRMode iRMode = IR_LIGHTS;
+    enum Mode {LIGHT, STATUS, COM};
+    Mode mode = STATUS;
+    String oldData = "report";
+    String newCommand[CONFIG::COMMAND_MAX_LENGTH];
+    String oldCommand[CONFIG::COMMAND_MAX_LENGTH];
     unsigned long int storedCode = 0;  // for sending when hold is pressed
+
+    bool checkForRepeat(String);
+    void checkForMode(String);
     void irDecode(unsigned long, int);
-    bool processSerial();
+    void processSerial(String);
 
 };
 #endif /* REMOTERECEIVE_H_ */

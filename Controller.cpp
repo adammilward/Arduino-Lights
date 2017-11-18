@@ -7,39 +7,88 @@
 
 #include "Controller.h"
 
-Controller::Controller(SerialCom* inComPtr) {
-    comPtr = *inComPtr;
-    mode = LIGHTS;
-    LightCtr LightRemote;
+Controller::Controller(SerialCom& inCom) {
+    com = inCom;
+    LightCtr lightRemote(com);
+    StatusCtr statusCtr(com);
     //FadeLightCtr Fader;
 }
 
 
 void Controller::serialReceive(String data) {
-    String newCommand[CONFIG::COMMAND_MAX_LENGTH];
-    int wordIndex = 0;
+    data.toLowerCase();
     data.trim();
+    com.debug("serialRecieve: " + data);
+
+    if (! checkForRepeat(data)) {
+        checkForMode(data);
+        processSerial(data);
+    }
+
+
+    /*data.trim();
+
+    int wordIndex = 0;
+
 
     int charIndex = data.indexOf(' ');
-    while (charIndex > -1 && wordIndex <= CONFIG::COMMAND_MAX_LENGTH-1) {
-        Serial.println(data);
+    while (charIndex > -1 && wordIndex < CONFIG::COMMAND_MAX_LENGTH) {
         newCommand[wordIndex] = data.substring(0, charIndex);
-        data.remove(0, charIndex + 1);
+        data.remove(0, charIndex);
         data.trim();
         wordIndex++;
         charIndex = data.indexOf(' ');
-        Serial.println(charIndex);
     }
-    // take the last word and add it to the array
-    newCommand[wordIndex] = data;
+    if (wordIndex < CONFIG::COMMAND_MAX_LENGTH) {
+        newCommand[wordIndex] = data;
+    }
+
     
-    for ( int i = 0 ; i <= wordIndex ; i++ ) Serial.println(newCommand[i]);
+    for ( int i = 0 ; i <= wordIndex ; i++ ) com.outLn(newCommand[i]);*/
     
-    /*if (LightRemote.actionSerial(&newCommand[0], wordIndex+1)) {
+    /*if (lightRemote.actionSerial(newCommand, wordIndex+1)) {
         //record if true
         byte i = CONFIG::COMMAND_MAX_LENGTH;
-        while ( i-- ) *( command + i ) = *( newCommand + i );
+        while ( i-- ) oldCommand[i] = newCommand[i];
     }*/
+}
+
+bool Controller::checkForRepeat(String data)  {
+    if (0 == data.length()) {
+        processSerial(oldData);
+    }
+    return false;
+}
+
+void Controller::checkForMode(String data)  {
+    if (data.indexOf("lights") != -1) {
+        mode = LIGHT;
+    } else if (data.indexOf("status") != -1) {
+        mode = STATUS;
+    } else if (data.indexOf("com") != -1) {
+        mode = COM;
+    }
+}
+
+void Controller::processSerial(String data) {
+    bool actioned = false;
+    switch (mode) {
+    case LIGHT:
+        actioned = lightRemote.actionSerial(data);
+        break;
+    case STATUS:
+        actioned = statusCtr.actionSerial(data);
+        break;
+    case COM:
+        actioned = com.actionSerial(data);
+        break;
+    }
+    if (actioned) {
+        // todo need to check fo more data hee?
+        oldData = data;
+    } else {
+        com.out("I'm sorry Dave, I'm affraid I can't do that.");
+    }
 }
 
 void Controller::irReceive(unsigned long inValue){
@@ -57,14 +106,14 @@ void Controller::irReceive(unsigned long inValue){
 
 void Controller::irDecode(unsigned long inValue, int inHCount){
     bool actioned = false;
-    switch (mode){
-        case LIGHTS:
-            LightRemote.holdCount = inHCount;
-            actioned = LightRemote.actionRemote(inValue);
+    switch (iRMode){
+        case IR_LIGHTS:
+            lightRemote.holdCount = inHCount;
+            actioned = lightRemote.actionRemote(inValue);
             break;
-        case MP3:
+        case IR_MP3:
             //MP3Remote.holdCount = inHCount;
-            actioned = LightRemote.actionRemote(inValue);
+            actioned = lightRemote.actionRemote(inValue);
             break;
     }
     if (true == actioned) {

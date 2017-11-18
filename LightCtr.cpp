@@ -12,26 +12,32 @@ Light LightCtr::Green(CONFIG::GREEN_PIN, 1);
 Light LightCtr::Blue(CONFIG::BLUE_PIN, 2);
 
 
-LightCtr::LightCtr() {
+LightCtr::LightCtr() {}
 
+LightCtr::LightCtr(SerialCom& inCom) {
+    com = inCom;
 }
-bool LightCtr::actionSerial(String* commandPtr, int commandLength){
-    //Com.OutLn(*(commandPtr));
-    //Serial.println(*(commandPtr + 0));
-    //Serial.println(*(commandPtr + 1));
-    for (int i = 0; i < 20; i++) {
-        //Serial.print(ctrMode);
-        //Serial.print("    ");
-        //Serial.println(i);
-        if (remoteAlias[i] == *(commandPtr + 0)) {
+
+bool LightCtr::actionSerial(String data){
+    com.outLn("Status Mode");
+    com.outLn("lightRemote actionSerial()");
+    return true;
+}
+
+bool LightCtr::actionSerial(String command[], int arrayLength){
+
+    for ( int i = 0 ; i <= arrayLength ; i++ ) com.outLn(command[i]);
+
+    for (byte i = 0; i < 20; i++) {
+        if (remoteAlias[i] == command[0]) {
             (this->*actions[ctrMode][i])();
             return true;
         }
     }
-    for (unsigned int i = 0; i < (sizeof(serialCommands)/sizeof(String)/2); i++) {
+    for (byte i = 0; i < 20; i++) {
         //Serial.println(i); // don't know why this fails if it is removed
         // todo add nested loop to look for successive commands
-        if (serialCommands[i][1] == *(commandPtr + 0)) {
+        if (serialCommands[i][1] == command[0]) {
             (this->*actions[ctrMode][i])();
             return true;
         }

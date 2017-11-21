@@ -30,27 +30,26 @@ void setup() {
 	//in the middle and call the "Compare A" function below
 	//OCR0A = 0x80;
 	//TIMSK0 |= _BV(OCIE0A);
-	waitMillisLights = millis() + masterCtr.lightRemote.delay;
+	waitMillisLights = millis() + masterCtr.lightCtr.delay;
 
     delay(100);
-    masterCtr.lightRemote.Red.set(1);
-    masterCtr.lightRemote.Green.set(0.5);
-    masterCtr.lightRemote.Blue.set(0);
+    masterCtr.lightCtr.Red.set(1);
+    masterCtr.lightCtr.Green.set(0.5);
+    masterCtr.lightCtr.Blue.set(0);
 
 
     com.sayName();
     masterCtr.comPtr->sayName();
-    masterCtr.lightRemote.comPtr->sayName();
+    masterCtr.lightCtr.comPtr->sayName();
+    masterCtr.statusCtr.comPtr->sayName();
     com.out("initilisation finished");
-
     com.setName("name set in setup");
     com.sayName();
     masterCtr.comPtr->sayName();
-    masterCtr.lightRemote.comPtr->sayName();
+    masterCtr.lightCtr.comPtr->sayName();
+    masterCtr.statusCtr.comPtr->sayName();
 
-    com.out("set comPtr for lightRemote");
-    masterCtr.lightRemote.setCom(&com);
-    masterCtr.lightRemote.comPtr->sayName();
+
 
 }
 
@@ -70,11 +69,11 @@ SIGNAL(TIMER0_COMPA_vect) {
 void loop() {
 
     // run fading
-    if (masterCtr.lightRemote.ctrMode != LightCtr::STATIC) {
+    if (masterCtr.lightCtr.ctrMode != LightCtr::STATIC) {
         if ((long) (millis() - waitMillisLights) >= 0) {
             // set the time for next interupt
-            waitMillisLights = millis() + masterCtr.lightRemote.delay;
-            masterCtr.lightRemote.interrupt();
+            waitMillisLights = millis() + masterCtr.lightCtr.delay;
+            masterCtr.lightCtr.interrupt();
         }
     }
 

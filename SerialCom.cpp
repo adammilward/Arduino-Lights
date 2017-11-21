@@ -23,21 +23,22 @@ void SerialCom::setName(String newName) {
     name = newName;
 }
 
-void SerialCom::out(String word1) {
-    outLn(word1);
+void SerialCom::out(String p1) {
+    outLn(p1);
 }
-void SerialCom::out(String word1, int in2) {
-    outWd(word1);
-    outLn(in2);
+void SerialCom::out(String p1, int p2) {
+    outWd(p1);
+    outLn(p2);
 }
-void SerialCom::out(String word1, String word2) {
-    outWd(word1);
-    outLn(word2);
+void SerialCom::out(String p1, float p2) {
+    outWd(p1);
+    outLn(p2);
 }
-void SerialCom::out(String word1, String word2, String word3) {
-    outWd(word1);
-    outWd(word2);
-    outLn(word3);
+void SerialCom::out(String p1, int p2, String p3, float p4) {
+    outWd(p1);
+    outWd(p2);
+    outWd(p3);
+    outLn(p4);
 }
 
 bool SerialCom::actionSerial(String data) {
@@ -65,18 +66,29 @@ void SerialCom::debug(String word1) {
     if (mode == VERBOSE) outLn(word1);
 }
 
-void SerialCom::outLn(char output) {
+
+void SerialCom::outLn(String output) {
     Serial.println(output);
     BT.println(output);
 }
-void SerialCom::outLn(String output) {
+void SerialCom::outLn(float output) {
+    Serial.println(output);
+    BT.println(output);
+}
+void SerialCom::outLn(int output) {
     Serial.println(output);
     BT.println(output);
 }
 
 void SerialCom::outWd(String output) {
     Serial.print(output);
-    Serial.print("   ");
     BT.print(output);
-    BT.print("   ");
+}
+void SerialCom::outWd(float output) {
+    Serial.print(output);
+    BT.print(output);
+}
+void SerialCom::outWd(int output) {
+    Serial.print(output);
+    BT.print(output);
 }

@@ -49,10 +49,13 @@ private:
             {0.5, 0.2, 0.2}, // dim white
     };
     float tempStore[3] = {0,0,0}; // for light power while holding
+
+    void report();
     void retrieveStore(colour);
     void storeThis(colour);
     void half();
     void checkDelay();
+
 
     String remoteAlias[20] = {
         "up",   "down",   "on",   "off",

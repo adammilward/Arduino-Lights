@@ -7,11 +7,11 @@
 
 #include "StatusCtr.h"
 StatusCtr::StatusCtr(){
-    VoltMeter voltMeter;
+    comPtr = NULL;
 }
 
-StatusCtr::StatusCtr(SerialCom& inCom) {
-    com = inCom;
+void StatusCtr::setCom(SerialCom* inComRef) {
+    comPtr = inComRef;
 }
 
 void StatusCtr::processData(String data) {
@@ -24,7 +24,7 @@ void StatusCtr::processData(String data) {
 }
 
 bool StatusCtr::actionSerial(String data) {
-    com.debug("StatusCtr::actionSerial");
+    comPtr->debug("StatusCtr::actionSerial");
     if (data.indexOf("report") != -1) {
         report();
         return true;
@@ -37,10 +37,10 @@ bool StatusCtr::actionSerial(String data) {
 }
 
 void StatusCtr::report() {
-    com.debug("StatusCtr::report()");
-    com.outLn(voltMeter.getName(0) + ": " + voltMeter.getVoltage(0) + "V");
-    com.outLn(voltMeter.getName(1) + ": " + voltMeter.getVoltage(1) + "V");
-    com.outLn(voltMeter.getName(2) + ": " + voltMeter.getVoltage(2) + "V");
-    com.outLn(voltMeter.getName(3) + ": " + voltMeter.getVoltage(3) + "V");
-    com.outLn(voltMeter.getName(4) + ": " + voltMeter.getVoltage(4) + "V");
+    comPtr->debug("StatusCtr::report()");
+    comPtr->outLn(voltMeter.getName(0) + ": " + voltMeter.getVoltage(0) + "V");
+    comPtr->outLn(voltMeter.getName(1) + ": " + voltMeter.getVoltage(1) + "V");
+    comPtr->outLn(voltMeter.getName(2) + ": " + voltMeter.getVoltage(2) + "V");
+    comPtr->outLn(voltMeter.getName(3) + ": " + voltMeter.getVoltage(3) + "V");
+    comPtr->outLn(voltMeter.getName(4) + ": " + voltMeter.getVoltage(4) + "V");
 }

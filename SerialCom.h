@@ -23,13 +23,18 @@ public:
 
     static SoftwareSerial BT;
     void outLn(String);
+    void outLn(float);
+    void outLn(int);
     void outWd(String);
-    void outLn(char);
-    void outWd(char);
+    void outWd(float);
+    void outWd(int);
+
     void out(String);
     void out(String, String);
     void out(String, int);
-    void out(String, String, String);
+    void out(String, float);
+    void out(String, int, String, float);
+
     void debug(String);
     bool actionSerial(String);
     void setName(String);

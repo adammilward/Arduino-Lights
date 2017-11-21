@@ -21,8 +21,16 @@ void LightCtr::setCom(SerialCom *inCom) {
 }
 
 bool LightCtr::actionSerial(String data){
-    comPtr->outLn("Status Mode");
-    comPtr->outLn("lightRemote actionSerial()");
+    comPtr->debug("lightRemote actionSerial()");
+    if (data.indexOf("report") != -1) {
+        report();
+        return true;
+    //} else if (data.indexOf("todo") != -1) {
+        // todo add more options
+        //return true;
+    } else {
+        return false;
+    }
     return true;
 }
 
@@ -47,6 +55,7 @@ bool LightCtr::actionSerial(String command[], int arrayLength){
     Serial.println("command not found");
     return false;
 }
+
 bool LightCtr::actionRemote(unsigned long inValue){
     for (int i = 0; i < 20; i++) {
         //Serial.print(ctrMode);
@@ -59,6 +68,19 @@ bool LightCtr::actionRemote(unsigned long inValue){
     }
     return false;
 }
+
+void LightCtr::report() {
+    comPtr->out("Red    base: ", Red.base, "  Red     power: ", Red.power);
+    comPtr->out("Green base: ", Green.base, "  Green power: ", Green.power);
+    comPtr->out("Blue    base: ", Blue.base, "  Blue   power: ", Blue.power);
+    comPtr->out("Red    gain: ", Red.gain);
+    comPtr->out("Green base: ", Green.gain);
+    comPtr->out("Blue   base: ", Blue.gain);
+    comPtr->out("Red    lower: ", Red.lower, "  Red     range: ", Red.range);
+    comPtr->out("Green lower: ", Green.lower, "  Green range: ", Green.range);
+    comPtr->out("Blue    lower: ", Blue.lower, "  Blue   range: ", Blue.range);
+}
+
 void LightCtr::interrupt(){
     static int counter = 0;  // increments each repetition
     switch (counter) {

@@ -19,7 +19,7 @@ public:
     Controller(SerialCom*);
     SerialCom *comPtr;
     const unsigned long int IR_HOLD = 0xFFFFFFFF;
-    LightCtr lightRemote;
+    LightCtr lightCtr;
     StatusCtr statusCtr;
     static SoftwareSerial BTs;
     void irReceive(unsigned long value);
@@ -37,9 +37,9 @@ private:
     unsigned long int storedCode = 0;  // for sending when hold is pressed
 
     bool checkForRepeat(String);
-    void checkForMode(String);
+    String checkForMode(String);
     void irDecode(unsigned long, int);
     void processSerial(String);
-
+    void help();
 };
 #endif /* REMOTERECEIVE_H_ */

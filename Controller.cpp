@@ -7,11 +7,10 @@
 
 #include "Controller.h"
 
-Controller::Controller(SerialCom *inCom) {
-    comPtr = inCom;
-
-
-    //StatusCtr statusCtr(comPtr);
+Controller::Controller(SerialCom *inComRef) {
+    comPtr = inComRef;
+    lightCtr.setCom(inComRef);
+    statusCtr.setCom(inComRef);
     //FadeLightCtr Fader;
 }
 
@@ -22,8 +21,11 @@ void Controller::serialReceive(String data) {
     comPtr->debug("serialRecieve: " + data);
 
     if (! checkForRepeat(data)) {
-        checkForMode(data);
-        processSerial(data);
+        data = checkForMode(data);
+        comPtr->debug("data after chek for mode: " + data);
+        if (0 < data.length()){
+            processSerial(data);
+        }
     }
 
 
@@ -61,21 +63,33 @@ bool Controller::checkForRepeat(String data)  {
     return false;
 }
 
-void Controller::checkForMode(String data)  {
+String Controller::checkForMode(String data)  {
     if (data.indexOf("lights") != -1) {
         mode = LIGHT;
+        data.remove(0, 6);
+        comPtr->out("Lights mode set");
     } else if (data.indexOf("status") != -1) {
         mode = STATUS;
+        data.remove(0, 6);
+        comPtr->out("Status mode set");
     } else if (data.indexOf("com") != -1) {
         mode = COM;
+        data.remove(0, 3);
+        comPtr->out("Com mode set");
+    } else {
+        return data;
+        comPtr->debug("no mode set");
     }
+    data.trim();
+    comPtr->debug("data: " + data);
+    return data;
 }
 
 void Controller::processSerial(String data) {
     bool actioned = false;
     switch (mode) {
     case LIGHT:
-        actioned = lightRemote.actionSerial(data);
+        actioned = lightCtr.actionSerial(data);
         break;
     case STATUS:
         actioned = statusCtr.actionSerial(data);
@@ -109,12 +123,12 @@ void Controller::irDecode(unsigned long inValue, int inHCount){
     bool actioned = false;
     switch (iRMode){
         case IR_LIGHTS:
-            lightRemote.holdCount = inHCount;
-            actioned = lightRemote.actionRemote(inValue);
+            lightCtr.holdCount = inHCount;
+            actioned = lightCtr.actionRemote(inValue);
             break;
         case IR_MP3:
             //MP3Remote.holdCount = inHCount;
-            actioned = lightRemote.actionRemote(inValue);
+            actioned = lightCtr.actionRemote(inValue);
             break;
     }
     if (true == actioned) {

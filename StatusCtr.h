@@ -13,9 +13,10 @@
 class StatusCtr {
 public:
     StatusCtr();
-    StatusCtr(SerialCom&);
-    SerialCom com;
 
+    SerialCom* comPtr;
+
+    void setCom(SerialCom*);
     bool actionSerial(String);
 
 private:

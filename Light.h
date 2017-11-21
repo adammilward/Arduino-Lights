@@ -17,8 +17,11 @@ public:
     enum fadeMode { LIN, SIN, EXP, EXPSIN };
     static fadeMode fMode;
 
-	float base;     // the base value <1, for deriving power <0 is off
+	float base;     // the base value  base <1, for deriving power <0 is off
 	int power;      // led Power 1 to 255 derived from base
+    float gain;         // for fading the lights <= 0.002
+    float lower;        // lower limit 1 to 255
+    float range;        // range/multiplier 0 to
 
 	Light(
 		int inPin,
@@ -44,9 +47,6 @@ private:
 	int id;             // 0 = red 1 = green 2 = blue
 	// below are only used for fading
 	int shiftOp = 1;    // 1 or -1  controls the direction of shift
-	float gain;         // for fading the lights <= 0.002
-	float lower;        // lower limit 1 to 255
-	float range;        // range/multiplier 0 to
 
 	float randomize();
 	void calcPow();     // called from Slide()

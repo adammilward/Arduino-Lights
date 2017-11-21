@@ -18,13 +18,14 @@
 class LightCtr {
 public:
     LightCtr();
-    LightCtr(SerialCom&);
+    //LightCtr(SerialCom*);
+    void setCom(SerialCom*);
 
     static Light Red;
     static Light Green;
     static Light Blue;
 
-    SerialCom com;
+    SerialCom *comPtr;
 
     enum controllerMode { STATIC, FADE };
     controllerMode ctrMode = controllerMode::STATIC;

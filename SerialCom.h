@@ -16,8 +16,10 @@ class SerialCom {
 public:
     SerialCom();
 
-    enum Mode {NORMAL, DEBUG_};
-    Mode mode = DEBUG_;
+    enum Mode {NORMAL, VERBOSE};
+    Mode mode = VERBOSE;
+
+    String name = "initialised";
 
     static SoftwareSerial BT;
     void outLn(String);
@@ -30,6 +32,8 @@ public:
     void out(String, String, String);
     void debug(String);
     bool actionSerial(String);
+    void setName(String);
+    void sayName();
 
 };
 

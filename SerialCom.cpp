@@ -14,6 +14,15 @@ SerialCom::SerialCom() {
 
 }
 
+void SerialCom::sayName() {
+    outWd("Name Is: ");
+    outLn(name);
+}
+
+void SerialCom::setName(String newName) {
+    name = newName;
+}
+
 void SerialCom::out(String word1) {
     outLn(word1);
 }
@@ -39,7 +48,7 @@ bool SerialCom::actionSerial(String data) {
             out("debug output disabled");
             return true;
         } else {
-            mode = DEBUG_;
+            mode = VERBOSE;
             out("debug mode enabled");
             return true;
         }
@@ -53,7 +62,7 @@ bool SerialCom::actionSerial(String data) {
 }
 
 void SerialCom::debug(String word1) {
-    if (mode == DEBUG_) outLn(word1);
+    if (mode == VERBOSE) outLn(word1);
 }
 
 void SerialCom::outLn(char output) {

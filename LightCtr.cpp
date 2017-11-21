@@ -12,21 +12,23 @@ Light LightCtr::Green(CONFIG::GREEN_PIN, 1);
 Light LightCtr::Blue(CONFIG::BLUE_PIN, 2);
 
 
-LightCtr::LightCtr() {}
+LightCtr::LightCtr() {
+    comPtr = NULL;
+}
 
-LightCtr::LightCtr(SerialCom& inCom) {
-    com = inCom;
+void LightCtr::setCom(SerialCom *inCom) {
+    comPtr = inCom;
 }
 
 bool LightCtr::actionSerial(String data){
-    com.outLn("Status Mode");
-    com.outLn("lightRemote actionSerial()");
+    comPtr->outLn("Status Mode");
+    comPtr->outLn("lightRemote actionSerial()");
     return true;
 }
 
 bool LightCtr::actionSerial(String command[], int arrayLength){
 
-    for ( int i = 0 ; i <= arrayLength ; i++ ) com.outLn(command[i]);
+    for ( int i = 0 ; i <= arrayLength ; i++ ) comPtr->outLn(command[i]);
 
     for (byte i = 0; i < 20; i++) {
         if (remoteAlias[i] == command[0]) {

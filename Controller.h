@@ -16,8 +16,8 @@
 
 class Controller {
 public:
-    Controller(SerialCom&);
-    SerialCom com;
+    Controller(SerialCom*);
+    SerialCom *comPtr;
     const unsigned long int IR_HOLD = 0xFFFFFFFF;
     LightCtr lightRemote;
     StatusCtr statusCtr;

@@ -7,10 +7,11 @@
 
 #include "Controller.h"
 
-Controller::Controller(SerialCom& inCom) {
-    com = inCom;
-    LightCtr lightRemote(com);
-    StatusCtr statusCtr(com);
+Controller::Controller(SerialCom *inCom) {
+    comPtr = inCom;
+
+
+    //StatusCtr statusCtr(comPtr);
     //FadeLightCtr Fader;
 }
 
@@ -18,7 +19,7 @@ Controller::Controller(SerialCom& inCom) {
 void Controller::serialReceive(String data) {
     data.toLowerCase();
     data.trim();
-    com.debug("serialRecieve: " + data);
+    comPtr->debug("serialRecieve: " + data);
 
     if (! checkForRepeat(data)) {
         checkForMode(data);
@@ -80,14 +81,14 @@ void Controller::processSerial(String data) {
         actioned = statusCtr.actionSerial(data);
         break;
     case COM:
-        actioned = com.actionSerial(data);
+        actioned = comPtr->actionSerial(data);
         break;
     }
     if (actioned) {
         // todo need to check fo more data hee?
         oldData = data;
     } else {
-        com.out("I'm sorry Dave, I'm affraid I can't do that.");
+        comPtr->out("I'm sorry Dave, I'm affraid I can't do that.");
     }
 }
 

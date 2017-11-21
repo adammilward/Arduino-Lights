@@ -8,8 +8,7 @@
 IRrecv irrecv(CONFIG::IREC_PIN);      // from the ir decode library
 decode_results Results; // from the ir decode library
 SerialCom com;
-
-Controller masterCtr(com);      // handles the remotes
+Controller masterCtr(&com);      // handles the remotes
 
 
 // Connect the HC-05 TX to the Arduino RX on pin 12.
@@ -37,6 +36,22 @@ void setup() {
     masterCtr.lightRemote.Red.set(1);
     masterCtr.lightRemote.Green.set(0.5);
     masterCtr.lightRemote.Blue.set(0);
+
+
+    com.sayName();
+    masterCtr.comPtr->sayName();
+    masterCtr.lightRemote.comPtr->sayName();
+    com.out("initilisation finished");
+
+    com.setName("name set in setup");
+    com.sayName();
+    masterCtr.comPtr->sayName();
+    masterCtr.lightRemote.comPtr->sayName();
+
+    com.out("set comPtr for lightRemote");
+    masterCtr.lightRemote.setCom(&com);
+    masterCtr.lightRemote.comPtr->sayName();
+
 }
 
 // Interrupt is called once a millisecond,

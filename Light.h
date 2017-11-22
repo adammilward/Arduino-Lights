@@ -7,6 +7,7 @@
  */
 
 #include "Config.h"
+#include "SoftwareSerial.h"
 
 #ifndef Light_h_
 #define Light_h_
@@ -16,6 +17,8 @@ public:
 	// mode for automatic fading
     enum fadeMode { LIN, SIN, EXP, EXPSIN };
     static fadeMode fMode;
+
+    const static String fadeModes[4];
 
 	float base;     // the base value  base <1, for deriving power <0 is off
 	int power;      // led Power 1 to 255 derived from base

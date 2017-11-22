@@ -11,6 +11,8 @@
 #include "Arduino.h"
 
 Light::fadeMode Light::fMode = Light::SIN;
+const String Light::fadeModes[] =
+    {"linear", "Sinusoidal", "Exponential", "SinExp"};
 
 Light::Light(
         int inPin,

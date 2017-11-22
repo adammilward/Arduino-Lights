@@ -42,6 +42,7 @@ private:
 
     enum colour { RED, GREEN, BLUE, WHITE };
     colour LightColour = colour::WHITE;
+
     float colourStore[4][3] = {
             {0.2, -1, -1}, // red
             {0.5, -1, 0.2}, // purple

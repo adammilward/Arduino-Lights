@@ -70,15 +70,22 @@ bool LightCtr::actionRemote(unsigned long inValue){
 }
 
 void LightCtr::report() {
-    comPtr->out("Red    base: ", Red.base, "  Red     power: ", Red.power);
+    comPtr->out("Red     base: ", Red.base, "  Red     power: ", Red.power);
     comPtr->out("Green base: ", Green.base, "  Green power: ", Green.power);
     comPtr->out("Blue    base: ", Blue.base, "  Blue   power: ", Blue.power);
     comPtr->out("Red    gain: ", Red.gain);
-    comPtr->out("Green base: ", Green.gain);
-    comPtr->out("Blue   base: ", Blue.gain);
-    comPtr->out("Red    lower: ", Red.lower, "  Red     range: ", Red.range);
+    comPtr->out("Green gain: ", Green.gain);
+    comPtr->out("Blue   gain: ", Blue.gain);
+    comPtr->out("Red     lower: ", Red.lower, "  Red     range: ", Red.range);
     comPtr->out("Green lower: ", Green.lower, "  Green range: ", Green.range);
     comPtr->out("Blue    lower: ", Blue.lower, "  Blue   range: ", Blue.range);
+    if (STATIC == ctrMode) {
+        comPtr->out("Mode: STATIC");
+    } else {
+        comPtr->outWd("FadeMode: ");
+        comPtr->outWd(Light::fadeModes[Light::fMode]);
+        comPtr->out("Delay: ", delay);
+    }
 }
 
 void LightCtr::interrupt(){

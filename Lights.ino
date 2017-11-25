@@ -37,20 +37,6 @@ void setup() {
     masterCtr.lightCtr.Green.set(0.5);
     masterCtr.lightCtr.Blue.set(0);
 
-
-    com.sayName();
-    masterCtr.comPtr->sayName();
-    masterCtr.lightCtr.comPtr->sayName();
-    masterCtr.statusCtr.comPtr->sayName();
-    com.out("initilisation finished");
-    com.setName("name set in setup");
-    com.sayName();
-    masterCtr.comPtr->sayName();
-    masterCtr.lightCtr.comPtr->sayName();
-    masterCtr.statusCtr.comPtr->sayName();
-
-
-
 }
 
 // Interrupt is called once a millisecond,
@@ -87,10 +73,12 @@ void loop() {
 	while (Serial.available()) {
         String command = Serial.readStringUntil('\n');
         masterCtr.serialReceive(command);
+        com.debug("end Serial.available");
     }
     while (com.BT.available()) {
         String command = Serial.readStringUntil('\n');
         masterCtr.serialReceive(command);
+        com.debug("end Serial.available");
     }
 }
 

@@ -14,11 +14,6 @@ SerialCom::SerialCom() {
 
 }
 
-void SerialCom::sayName() {
-    outWd("Name Is: ");
-    outLn(name);
-}
-
 void SerialCom::setName(String newName) {
     name = newName;
 }
@@ -41,25 +36,22 @@ void SerialCom::out(String p1, int p2, String p3, float p4) {
     outLn(p4);
 }
 
-bool SerialCom::actionSerial(String data) {
+bool SerialCom::actionSerial(String* firstWordPtr , int commandLength) {
     debug("SerialCom::actionSerial");
-    if (data.indexOf("debug") != -1) {
-        if(data.indexOf("off") != -1) {
-            mode = NORMAL;
-            out("debug output disabled");
-            return true;
-        } else {
-            mode = VERBOSE;
-            out("debug mode enabled");
-            return true;
-        }
-    } else if (data.indexOf("normal") != -1) {
+    debug("firstWordPtr = " + *firstWordPtr);
+
+    if (*(firstWordPtr) == "normal") {
         mode = NORMAL;
-        out("debug output disabled");
-        return true;
+        outLn("com mode set to 'normal'");
+    } else if (*(firstWordPtr) == "debug") {
+        mode = VERBOSE;
+        outLn("com mode set to 'debug'");
     } else {
+        outLn("Command not recognised, options are:");
+        outLn("'normal' and 'debug'");
         return false;
     }
+    return true;
 }
 
 void SerialCom::debug(String word1) {

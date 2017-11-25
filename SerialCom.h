@@ -36,7 +36,7 @@ public:
     void out(String, int, String, float);
 
     void debug(String);
-    bool actionSerial(String);
+    bool actionSerial(String*, int);
     void setName(String);
     void sayName();
 

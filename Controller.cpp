@@ -61,11 +61,11 @@ void Controller::serialReceive(String data) {
         comPtr->debug("no more commands");
     }
 
-    comPtr->debug("newCommand array afte mode: ");
-    for ( int i = 0 ; i < commandLength; i++ ) comPtr->debug(newCommand[i]);
+    comPtr->debug("newCommand array after mode: ");
+    for (int i = firstWordIndex; i <= commandLength; i++ ) comPtr->debug(newCommand[i]);
 
     comPtr->debug("lastCommand array  afte mode: ");
-    for ( int i = 0 ; i < lastCommandLength; i++ ) comPtr->debug(lastCommand[i]);
+    for (int i = 0 ; i < lastCommandLength; i++ ) comPtr->debug(lastCommand[i]);
 
 
 }
@@ -82,51 +82,29 @@ bool Controller::checkForMode(String* wordPtr, int length)  {
 
     if (*wordPtr == "lights") {
         mode = LIGHTS;
-        comPtr->out("Lights mode set");
+        comPtr->out("Lights Mode engaged");
         return true;
     } else if (*wordPtr == "status") {
         mode = STATUS;
-        comPtr->out("Status mode set");
+        comPtr->out("Status Mode engaged");
         return true;
     } else if (*wordPtr == "com") {
         mode = COM;
-        comPtr->out("Com mode set");
+        comPtr->out("Com Mode engaged");
         return true;
     }
     comPtr->debug("checkForMode: no mode set");
     return false;
 }
 
-String Controller::checkForMode(String data)  {
-    if (data.indexOf("lights") != -1) {
-        mode = LIGHTS;
-        data.remove(0, 6);
-        comPtr->out("Lights mode set");
-    } else if (data.indexOf("status") != -1) {
-        mode = STATUS;
-        data.remove(0, 6);
-        comPtr->out("Status mode set");
-    } else if (data.indexOf("com") != -1) {
-        mode = COM;
-        data.remove(0, 3);
-        comPtr->out("Com mode set");
-    } else {
-        return data;
-        comPtr->debug("no mode set");
-    }
-    data.trim();
-    comPtr->debug("data: " + data);
-    return data;
-}
-
 bool Controller::processSerial(String* firstWordPtr, int commandLength) {
     bool actioned = false;
     switch (mode) {
     case LIGHTS:
-        //actioned = lightCtr.actionSerial(firstWordPtr, commandLength);
+        actioned = lightCtr.actionSerial(firstWordPtr, commandLength);
         break;
     case STATUS:
-        //actioned = statusCtr.actionSerial(firstWordPtr, commandLength);
+        actioned = statusCtr.actionSerial(firstWordPtr, commandLength);
         break;
     case COM:
         actioned = comPtr->actionSerial(firstWordPtr, commandLength);
@@ -144,27 +122,6 @@ void Controller::copy(String* firstWordPtr, String* oldCommandPtr, int commandLe
     lastCommandLength = commandLength;
     while(commandLength--) *oldCommandPtr++ = *firstWordPtr++;
 }
-
-/*void Controller::processSerial(String data) {
-    bool actioned = false;
-    switch (mode) {
-    case LIGHTS:
-        actioned = lightCtr.actionSerial(data);
-        break;
-    case STATUS:
-        actioned = statusCtr.actionSerial(data);
-        break;
-    case COM:
-        actioned = comPtr->actionSerial(data);
-        break;
-    }
-    if (actioned) {
-        // todo need to check fo more data hee?
-        oldData = data;
-    } else {
-        comPtr->out("I'm sorry Dave, I'm affraid I can't do that.");
-    }
-}*/
 
 void Controller::irReceive(unsigned long inValue){
     //Serial.println(inValue, HEX);

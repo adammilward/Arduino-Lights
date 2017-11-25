@@ -23,24 +23,26 @@ void StatusCtr::processData(String data) {
     }
 }
 
-bool StatusCtr::actionSerial(String data) {
+bool StatusCtr::actionSerial(String* firstWordPtr , int commandLength) {
     comPtr->debug("StatusCtr::actionSerial");
-    if (data.indexOf("report") != -1) {
+    comPtr->debug("firstWordPtr = " + *firstWordPtr);
+    comPtr->debug("command length = " + String(commandLength));
+    if (*(firstWordPtr) == "report") {
+        comPtr->out(" - Status Report - ");
         report();
-        return true;
-    //} else if (data.indexOf("todo") != -1) {
-        // todo add more options
-        //return true;
     } else {
+        comPtr->out("Status Controller commands are:");
+        comPtr->out("report");
         return false;
     }
+    return true;
 }
 
 void StatusCtr::report() {
     comPtr->debug("StatusCtr::report()");
-    comPtr->outLn(voltMeter.getName(0) + ": " + voltMeter.getVoltage(0) + "V");
-    comPtr->outLn(voltMeter.getName(1) + ": " + voltMeter.getVoltage(1) + "V");
-    comPtr->outLn(voltMeter.getName(2) + ": " + voltMeter.getVoltage(2) + "V");
-    comPtr->outLn(voltMeter.getName(3) + ": " + voltMeter.getVoltage(3) + "V");
-    comPtr->outLn(voltMeter.getName(4) + ": " + voltMeter.getVoltage(4) + "V");
+    comPtr->out(voltMeter.getName(0) + ": " + voltMeter.getVoltage(0) + "V");
+    comPtr->out(voltMeter.getName(1) + ": " + voltMeter.getVoltage(1) + "V");
+    comPtr->out(voltMeter.getName(2) + ": " + voltMeter.getVoltage(2) + "V");
+    comPtr->out(voltMeter.getName(3) + ": " + voltMeter.getVoltage(3) + "V");
+    comPtr->out(voltMeter.getName(4) + ": " + voltMeter.getVoltage(4) + "V");
 }

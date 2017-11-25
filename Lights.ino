@@ -33,8 +33,8 @@ void setup() {
 	waitMillisLights = millis() + masterCtr.lightCtr.delay;
 
     delay(100);
-    masterCtr.lightCtr.Red.set(1);
-    masterCtr.lightCtr.Green.set(0.5);
+    masterCtr.lightCtr.Red.set(0);
+    masterCtr.lightCtr.Green.set(0);
     masterCtr.lightCtr.Blue.set(0);
 
 }
@@ -76,7 +76,7 @@ void loop() {
         com.debug("end Serial.available");
     }
     while (com.BT.available()) {
-        String command = Serial.readStringUntil('\n');
+        String command = com.BT.readStringUntil('\r');
         masterCtr.serialReceive(command);
         com.debug("end Serial.available");
     }

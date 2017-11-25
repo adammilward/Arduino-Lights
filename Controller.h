@@ -31,18 +31,15 @@ private:
     IRMode iRMode = IR_LIGHTS;
     enum Mode {LIGHTS, STATUS, COM};
     Mode mode = STATUS;
-    String oldData = "report";
-    //String newCommand[CONFIG::COMMAND_MAX_LENGTH];
+
     int lastCommandLength = 1;
     String lastCommand[CONFIG::COMMAND_MAX_LENGTH] =  {"repot"};
     unsigned long int storedCode = 0;  // for sending when hold is pressed
 
     bool checkForRepeat(String);
     bool checkForMode(String*, int);
-    String checkForMode(String);
     void irDecode(unsigned long, int);
     bool processSerial(String*, int);
-    void processSerial(String);
     void help();
     void copy(String*, String*, int);
 };

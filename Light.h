@@ -8,12 +8,22 @@
 
 #include "Config.h"
 #include "SoftwareSerial.h"
+#include "SerialCom.h"
 
 #ifndef Light_h_
 #define Light_h_
 
 class Light{
 public:
+	Light(
+		int inPin,
+		int id,
+		float inGain = 0,
+		float inLower = 0,
+		float inUpper = 1
+		);
+    void setCom(SerialCom*);
+
 	// mode for automatic fading
     enum fadeMode { LIN, SIN, EXP, EXPSIN };
     static fadeMode fMode;
@@ -26,25 +36,21 @@ public:
     float lower;        // lower limit 1 to 255
     float range;        // range/multiplier 0 to
 
-	Light(
-		int inPin,
-		int id,
-		float inGain = 0,
-		float inLower = 0,
-		float inUpper = 1
-		);
 	void shift(int op, float shiftGain = DEF_GAIN);
 	void set(float setBase, bool flash = false);
 	void slide();
 	void toHalf();
-	void changeLower(int op, float change = 0.1);
-	void changeUpper(int op, float change = 0.1);
+	void changeLower(int op, float change = 0.2);
+	void changeUpper(int op, float change = 0.2);
 	void flashOff();
 	void flashHalf();
 	void flashOn();
 
 private:
-	static constexpr float DEF_GAIN = 0.0625;     // default gain for use with Shift()
+
+	SerialCom* comPtr;
+
+	static constexpr float DEF_GAIN = 0.1;     // default gain for use with Shift()
 
 	int pin;            // the pin for this colour
 	int id;             // 0 = red 1 = green 2 = blue

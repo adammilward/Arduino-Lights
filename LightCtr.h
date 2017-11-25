@@ -18,7 +18,6 @@
 class LightCtr {
 public:
     LightCtr();
-    //LightCtr(SerialCom*);
     void setCom(SerialCom*);
 
     static Light Red;
@@ -32,8 +31,7 @@ public:
 
     int delay = CONFIG::DELAY_MIN*2;
 
-    bool actionSerial(String);
-    bool actionSerial(String[], int);
+    bool actionSerial(String*, int);
     bool actionRemote(unsigned long);
     void interrupt();
     int holdCount = 0;          // count how long button pressed
@@ -57,23 +55,27 @@ private:
     void half();
     void checkDelay();
 
+    bool actionOneWord(String*);
+    bool actionTwoWords(String*);
 
+    int remoteAliasLength = 20;
     String remoteAlias[20] = {
         "up",   "down",   "on",   "off",
         "red",   "green",   "blue",   "white",
         "orange",   "yellow",   "cyan",   "purple",
         "j1",   "j2",   "j3",   "j4",
-        "m1",   "m1",   "m1",   "m1"
+        "m1",   "m2",   "m3",   "m4"
     };
-    String serialCommands[8][2] = {
-            {"all", "up"},
-            {"all", "down"},
-            {"red", "up"},
-            {"red", "down"},
-            {"geen", "up"},
-            {"green", "down"},
-            {"blue", "up"},
-            {"blue", "down"}
+    //int oneWordCommandsLength = 1;
+    //String oneWordCommands[1] = {"report"};
+    int firstOfTwoLength = 7;
+    String firstOfTwoCommands[7] = {
+            "all", "red", "green", "blue",
+            "lower", "upper", "delay"
+    };
+    int secondOfTwoLength = 4;
+    String secondOfTwoCommands[4] = {
+            "up", "down", "bottom", "top"
     };
     unsigned long int codes[20] = {
         0xFFA05F,   0xFF20DF,   0x000001,   0xFFE01F,
@@ -85,30 +87,49 @@ private:
 
     // declare the function pointer
     typedef void (LightCtr::*PTR)();
+
+    PTR twoWordActions[7][4]{
+{&LightCtr::up, &LightCtr::up ,&LightCtr::allBot ,&LightCtr::allTop },// all
+{&LightCtr::red, &LightCtr::orange, &LightCtr::redBot, &LightCtr::redTop},// red
+{&LightCtr::green, &LightCtr::yellow, &LightCtr::greenBot, &LightCtr::greenTop},// green
+{&LightCtr::white, &LightCtr::purple, &LightCtr::blueBot, &LightCtr::blueTop},// blue
+{&LightCtr::red_f, &LightCtr::orange_f, &LightCtr::lowerBot, &LightCtr::lowerTop},// lower
+{&LightCtr::green_f, &LightCtr::yellow_f, &LightCtr::upperBot, &LightCtr::upperTop},// upper
+{&LightCtr::white_f, &LightCtr::purple_f, &LightCtr::delayBot, &LightCtr::delayTop}// delay
+    };
+
     PTR actions[2][20] = {
         {   // first array for static mode
-&LightCtr::up,    &LightCtr::down,   &LightCtr::on,   &LightCtr::off   ,
-&LightCtr::red,   &LightCtr::green,  &LightCtr::blue, &LightCtr::white ,
-&LightCtr::orange,&LightCtr::yellow, &LightCtr::cyan, &LightCtr::purple,
+&LightCtr::up,    &LightCtr::up,   &LightCtr::on,   &LightCtr::off   ,
+&LightCtr::red,   &LightCtr::green,  &LightCtr::white, &LightCtr::white ,
+&LightCtr::orange,&LightCtr::yellow, &LightCtr::purple, &LightCtr::purple,
 &LightCtr::jump3, &LightCtr::jump7,  &LightCtr::fade3,&LightCtr::fade4 ,
 &LightCtr::m1,    &LightCtr::m2,     &LightCtr::m3,   &LightCtr::m4    ,
         },
         {   // second array for fade mode
 &LightCtr::up,    &LightCtr::down,   &LightCtr::on,   &LightCtr::off   ,
-&LightCtr::red_f,   &LightCtr::green_f,  &LightCtr::blue, &LightCtr::white_f ,
-&LightCtr::orange_f,&LightCtr::yellow_f, &LightCtr::cyan, &LightCtr::purple_f,
+&LightCtr::red_f,   &LightCtr::green_f,  &LightCtr::white_f, &LightCtr::white_f ,
+&LightCtr::orange_f,&LightCtr::yellow_f, &LightCtr::purple_f, &LightCtr::purple_f,
 &LightCtr::jump3, &LightCtr::jump7,  &LightCtr::fade3,&LightCtr::fade4 ,
 &LightCtr::m1,    &LightCtr::m2,     &LightCtr::m3,   &LightCtr::m4    ,
         }
     };
 void up();      void down();    void on();      void off();
-void red();     void green ();  void blue  ();  void white ();
-void orange();  void yellow();  void cyan  ();  void purple();
+void red();     void green ();                  void white ();
+void orange();  void yellow();                  void purple();
 void jump3 ();  void jump7 ();  void fade3 ();  void fade4 ();
 void m1    ();  void m2    ();  void m3    ();  void m4    ();
 
 void red_f();     void green_f ();                void white_f ();
 void orange_f();  void yellow_f();                void purple_f();
+
+void allBot(); void allTop();
+void redBot(); void redTop();
+void greenBot(); void greenTop();
+void blueBot(); void blueTop();
+void lowerBot(); void lowerTop();
+void upperBot(); void upperTop();
+void delayBot(); void delayTop();
 
 };
 #endif /* LightCtr_H_ */

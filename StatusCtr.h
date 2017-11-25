@@ -17,7 +17,7 @@ public:
     SerialCom* comPtr;
 
     void setCom(SerialCom*);
-    bool actionSerial(String);
+    bool actionSerial(String*, int);
 
 private:
     VoltMeter voltMeter;

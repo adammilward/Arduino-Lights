@@ -11,48 +11,65 @@ Light LightCtr::Red(CONFIG::RED_PIN, 0);
 Light LightCtr::Green(CONFIG::GREEN_PIN, 1);
 Light LightCtr::Blue(CONFIG::BLUE_PIN, 2);
 
-
 LightCtr::LightCtr() {
-    comPtr = NULL;
+    comPtr = 0;
 }
 
 void LightCtr::setCom(SerialCom *inCom) {
     comPtr = inCom;
+    Red.setCom(inCom);
+    Green.setCom(inCom);
+    Blue.setCom(inCom);
 }
 
-bool LightCtr::actionSerial(String data){
-    comPtr->debug("lightRemote actionSerial()");
-    if (data.indexOf("report") != -1) {
+bool LightCtr::actionSerial(String* firstWordPtr, int arrayLength){
+    bool actioned = false;
+    if (1 == arrayLength) {
+        actioned = actionOneWord(firstWordPtr);
+    } else if (2 == arrayLength) {
+        actioned = actionTwoWords(firstWordPtr);
+    }
+    if (!actioned) {
+        comPtr->out("Command not recognised, options are:");
+        comPtr->out("the name of a button on the remote;");
+        comPtr->out("'report';");
+        comPtr->out("'red/green/blue/all'  'up/down/top/bottom'; ");
+        comPtr->out("setting with numbers has not been configured");
+    }
+    return actioned;
+}
+
+bool LightCtr::actionOneWord(String* word){
+    int i = remoteAliasLength;
+    while (i --) {
+        comPtr->debug("mode= "+String(ctrMode)+" index= "+String(i));
+        if (remoteAlias[i] == *word) {
+            (this->*actions[ctrMode][i])();
+            return true;
+        }
+    }
+    if (*word == "report") {
         report();
         return true;
-    //} else if (data.indexOf("todo") != -1) {
-        // todo add more options
-        //return true;
-    } else {
-        return false;
     }
-    return true;
+    return false;
 }
 
-bool LightCtr::actionSerial(String command[], int arrayLength){
-
-    for ( int i = 0 ; i <= arrayLength ; i++ ) comPtr->outLn(command[i]);
-
-    for (byte i = 0; i < 20; i++) {
-        if (remoteAlias[i] == command[0]) {
-            (this->*actions[ctrMode][i])();
-            return true;
+bool LightCtr::actionTwoWords(String* firstWordPtr){
+    int i = firstOfTwoLength;
+    while (i --) {
+        comPtr->debug("index= "+String(i));
+        if (firstOfTwoCommands[i] == *firstWordPtr) {
+            int j = secondOfTwoLength;
+            while (j --) {
+                comPtr->debug("Jindex= "+String(j));
+                if (secondOfTwoCommands[j] == *(firstWordPtr+1)) {
+                    (this->*twoWordActions[i][j])();
+                    return true;
+                }
+            }
         }
     }
-    for (byte i = 0; i < 20; i++) {
-        //Serial.println(i); // don't know why this fails if it is removed
-        // todo add nested loop to look for successive commands
-        if (serialCommands[i][1] == command[0]) {
-            (this->*actions[ctrMode][i])();
-            return true;
-        }
-    }
-    Serial.println("command not found");
     return false;
 }
 
@@ -70,21 +87,27 @@ bool LightCtr::actionRemote(unsigned long inValue){
 }
 
 void LightCtr::report() {
-    comPtr->out("Red     base: ", Red.base, "  Red     power: ", Red.power);
-    comPtr->out("Green base: ", Green.base, "  Green power: ", Green.power);
-    comPtr->out("Blue    base: ", Blue.base, "  Blue   power: ", Blue.power);
-    comPtr->out("Red    gain: ", Red.gain);
-    comPtr->out("Green gain: ", Green.gain);
-    comPtr->out("Blue   gain: ", Blue.gain);
-    comPtr->out("Red     lower: ", Red.lower, "  Red     range: ", Red.range);
-    comPtr->out("Green lower: ", Green.lower, "  Green range: ", Green.range);
-    comPtr->out("Blue    lower: ", Blue.lower, "  Blue   range: ", Blue.range);
+    comPtr->out("Red      base: "+String(Red.base)+
+        "  power: "+String(Red.power));
+    comPtr->out("Green  base: "+String(Green.base)+
+        "  power: "+String(Green.power));
+    comPtr->out("Blue     base: "+String(Blue.base)+
+        "  power: "+String(Blue.power));
+    comPtr->out("Red      gain: "+String(Red.gain));
+    comPtr->out("Green  gain: "+String(Green.gain));
+    comPtr->out("Blue     gain: "+String(Blue.gain));
+    comPtr->out("Red      lower: "+String(Red.lower)+
+        "  range: "+String(Red.range));
+    comPtr->out("Green  lower: "+String(Green.lower)+
+        "  range: "+String(Green.range));
+    comPtr->out("Blue     lower: "+String(Blue.lower)+
+        "  range: "+String(Blue.range));
     if (STATIC == ctrMode) {
         comPtr->out("Mode: STATIC");
     } else {
         comPtr->outWd("FadeMode: ");
         comPtr->outWd(Light::fadeModes[Light::fMode]);
-        comPtr->out("Delay: ", delay);
+        comPtr->out("Delay: "+String(delay));
     }
 }
 
@@ -92,7 +115,7 @@ void LightCtr::interrupt(){
     static int counter = 0;  // increments each repetition
     switch (counter) {
     case 1:
-        // slide should not be more than 0.002 for sm0otheness
+        // slide should not be more than 0.002 for smootheness
         Red.slide();
         break;
     case 2:
@@ -102,20 +125,9 @@ void LightCtr::interrupt(){
         Blue.slide();
         break;
     default:
-
-        Serial.print(Red.base * 100);
-        Serial.print(" ");
-        Serial.print(Red.power);
-        Serial.print(" ");
-        Serial.print(Green.base * 100);
-        Serial.print(" ");
-        Serial.print(Green.power);
-        Serial.print(" ");
-        Serial.print(Blue.base * 100);
-        Serial.print(" ");
-        Serial.print(Blue.power);
-        Serial.println(" ");
-
+comPtr->debugWd(String(Red.base * 100)+"    "+String(Red.power)+"    ");
+comPtr->debugWd(String(Green.base * 100)+"    "+String(Green.power)+"    ");
+comPtr->debug(String(Blue.base * 100)+"    "+String(Blue.power)+"    ");
         counter = 0;
         break;
     }
@@ -165,9 +177,9 @@ void LightCtr::down(){
 }
 void LightCtr::on (){ //off
     //Serial.println("on");
-    Red.set(1);
-    Green.set(1);
-    Blue.set(1);
+    Red.set(0.5);
+    Green.set(0.5);
+    Blue.set(0.5);
 }
 void LightCtr::off (){ //off
     //Serial.println("off");
@@ -176,14 +188,59 @@ void LightCtr::off (){ //off
     Blue.set(-1);
     ctrMode = STATIC;
 }
-void LightCtr::red   () {Red.shift(+1);}
+void LightCtr::red   () { Red.shift(+1);}
 void LightCtr::green () { Green.shift(+1); }
-void LightCtr::blue  () { Blue.shift(+1); }
 void LightCtr::white () { Blue.shift(+1); }
 void LightCtr::orange() { Red.shift(-1); }
 void LightCtr::yellow() { Green.shift(-1); }
-void LightCtr::cyan  () { Blue.shift(-1); }
 void LightCtr::purple() { Blue.shift(-1); }
+
+void LightCtr::allBot(){
+    Red.set(0);
+    Green.set(0);
+    Blue.set(0);
+}
+void LightCtr::allTop(){
+    Red.set(1);
+    Green.set(1);
+    Blue.set(1);
+}
+void LightCtr::redBot() { Red.set(0);}
+void LightCtr::redTop() { Red.set(1);}
+void LightCtr::greenBot() { Green.set(0);}
+void LightCtr::greenTop() { Green.set(1);}
+void LightCtr::blueBot() { Blue.set(0);}
+void LightCtr::blueTop() { Blue.set(1);}
+void LightCtr::lowerBot() {
+    Red.changeLower(-1, 1);
+    Green.changeLower(-1, 1);
+    Blue.changeLower(-1, 1);
+}
+void LightCtr::lowerTop() {
+    Red.changeLower(1, 1);
+    Green.changeLower(1, 1);
+    Blue.changeLower(1, 1);
+}
+void LightCtr::upperBot() {
+    Red.changeUpper(-1, 1);
+    Green.changeUpper(-1, 1);
+    Blue.changeUpper(-1, 1);
+}
+void LightCtr::upperTop() {
+    Red.changeUpper(1, 1);
+    Green.changeUpper(1, 1);
+    Blue.changeUpper(1, 1);
+}
+void LightCtr::delayBot(){
+    delay = CONFIG::DELAY_MIN-1;
+    checkDelay();
+    comPtr->out("delay= "+String(delay));
+}
+void LightCtr::delayTop() {
+    delay = CONFIG::DELAY_MAX+1;
+    checkDelay();
+    comPtr->out("delay= "+String(delay));
+}
 
 void LightCtr::jump3 () {
     //Serial.println("jump3()");
@@ -253,34 +310,35 @@ void LightCtr::red_f(){
     Red.changeLower(+1, 0.2);
     Green.changeLower(+1, 0.2);
     Blue.changeLower(+1, 0.2);
-};
+}
 void LightCtr::orange_f (){
     Red.changeLower(-1, 0.2);
     Green.changeLower(-1, 0.2);
     Blue.changeLower(-1, 0.2);
-};
+}
 void LightCtr::green_f (){
     Red.changeUpper(+1, 0.2);
     Green.changeUpper(+1, 0.2);
     Blue.changeUpper(+1, 0.2);
-};
+}
 void LightCtr::yellow_f(){
     Red.changeUpper(-1, 0.2);
     Green.changeUpper(-1, 0.2);
     Blue.changeUpper(-1, 0.2);
-};
+}
 void LightCtr::white_f(){
     delay *= 4;
     checkDelay();
     //Serial.print("delay  ");
     //Serial.println(delay);
-};
+}
 void LightCtr::purple_f(){
     delay /= 4;
     checkDelay();
+    comPtr->out("delay= "+String(delay));
     //Serial.print("delay  ");
     //Serial.println(delay);
-};
+}
 void LightCtr::checkDelay(){
     if (delay > CONFIG::DELAY_MAX) {
         delay = CONFIG::DELAY_MAX;

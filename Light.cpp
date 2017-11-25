@@ -29,6 +29,10 @@ Light::Light(
 	base = inUpper;
 }
 
+void Light::setCom(SerialCom *inCom) {
+    comPtr = inCom;
+}
+
 // change change power by a given gain or default
 // int op = -1 or 1
 // float shiftGain < 1
@@ -82,12 +86,8 @@ void Light::set(float setBase, bool flash) {
 		//Serial.println(setBase);
 		analogWrite(pin, (power));
 	}
-	//Serial.print("fMode ");
-	//Serial.print(fMode);
-	//Serial.print("   base ");
-	//Serial.print(base);
-	//Serial.print("   power ");
-	//Serial.println(power);
+	comPtr->out("base= "+String(base));
+	comPtr->out("power= "+String(power));
 }
 
 // change power of light automatically
@@ -214,13 +214,13 @@ void Light::changeLower(int op, float change) {
     lower = tempLower * 254 + 1;
     base = 0;
     flashOff();
-    /*Serial.print("lower: ");
-    Serial.println(lower);
-    Serial.print("range: ;");
-    Serial.println(range);
-    Serial.print("base: ");
-    Serial.println(base);*/
+
+    comPtr->out("upper= "+String(tempUpper));
+    comPtr->out("lower= "+String(tempLower));
 }
+/**
+ * range from 0.2 to 1 increments of 0.2
+ */
 void Light::changeUpper(int op, float change) {
    /* Serial.println();
     Serial.println();
@@ -250,12 +250,8 @@ void Light::changeUpper(int op, float change) {
     base = 1;
     flashOff();
 
-   /* Serial.print("lower: ");
-    Serial.println(lower);
-    Serial.print("range: ");
-    Serial.println(range);
-    Serial.print("base: ");
-    Serial.println(base);*/
+    comPtr->out("upper= "+String(tempUpper));
+    comPtr->out("lower= "+String(tempLower));
 }
 
 

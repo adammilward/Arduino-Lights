@@ -17,29 +17,17 @@ public:
     SerialCom();
 
     enum Mode {NORMAL, VERBOSE};
-    Mode mode = VERBOSE;
+    Mode mode = NORMAL;
 
     String name = "initialised";
 
     static SoftwareSerial BT;
-    void outLn(String);
-    void outLn(float);
-    void outLn(int);
-    void outWd(String);
-    void outWd(float);
-    void outWd(int);
 
     void out(String);
-    void out(String, String);
-    void out(String, int);
-    void out(String, float);
-    void out(String, int, String, float);
-
+    void outWd(String);
     void debug(String);
+    void debugWd(String);
     bool actionSerial(String*, int);
-    void setName(String);
-    void sayName();
-
 };
 
 #endif /* SERIALCOM_H_ */

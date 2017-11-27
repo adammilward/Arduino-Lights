@@ -23,11 +23,12 @@ void LightCtr::setCom(SerialCom *inCom) {
 }
 
 bool LightCtr::actionSerial(String* firstWordPtr, int arrayLength){
+    comPtr->debug("array length = "+String(arrayLength));
     bool actioned = false;
     if (1 == arrayLength) {
         actioned = actionOneWord(firstWordPtr);
     } else if (2 == arrayLength) {
-        actioned = actionTwoWords(firstWordPtr);
+        actioned = parseTwoWords(firstWordPtr);
     }
     if (!actioned) {
         comPtr->out("Command not recognised, options are:");
@@ -48,21 +49,63 @@ bool LightCtr::actionOneWord(String* word){
             return true;
         }
     }
-    if (*word == "report") {
-        report();
-        return true;
+    i = singleLength;
+    while (i --) {
+        comPtr->debug("single words index = "+String(i));
+        if (oneWordCommands[i] == *word) {
+            (this->*oneWordActions[i])();
+            return true;
+        }
     }
     return false;
 }
 
-bool LightCtr::actionTwoWords(String* firstWordPtr){
+bool LightCtr::parseTwoWords(String* firstWordPtr) {
+    if (isNum((firstWordPtr+1))) {
+        float value = (firstWordPtr+1)->toFloat();
+        return actionWordAndFloat(firstWordPtr, value);
+    } else {
+        return actionTwoWords(firstWordPtr);
+    }
+}
+
+bool LightCtr::isNum(String* word) {
+    boolean isNum=false;
+    for(byte i = 0 ; i < word->length() ; i++)
+    {
+        isNum = (
+                isDigit(word->charAt(i)) ||
+                word->charAt(i) == '+' ||
+                word->charAt(i) == '.' ||
+                word->charAt(i) == '-');
+        if(!isNum) return false;
+    }
+    return isNum;
+}
+
+bool LightCtr::actionWordAndFloat(String* word, float value) {
+    comPtr->debug("first word: "+*word);
+    comPtr->debug("value= "+String(value));
+    int i = singleLength;
+    while (i--) {
+        comPtr->debug("single words index = "+String(i));
+        if (wordAndFloatCommands[i] == *word) {
+            comPtr->debug("processing word with float");
+            (this->*wordAndFloatActions[i])(value);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool LightCtr::actionTwoWords(String* firstWordPtr) {
     int i = firstOfTwoLength;
     while (i --) {
-        comPtr->debug("index= "+String(i));
+        comPtr->debug("first word index= "+String(i));
         if (firstOfTwoCommands[i] == *firstWordPtr) {
             int j = secondOfTwoLength;
-            while (j --) {
-                comPtr->debug("Jindex= "+String(j));
+            while (j--) {
+                comPtr->debug("second word index index= "+String(j));
                 if (secondOfTwoCommands[j] == *(firstWordPtr+1)) {
                     (this->*twoWordActions[i][j])();
                     return true;
@@ -87,6 +130,12 @@ bool LightCtr::actionRemote(unsigned long inValue){
 }
 
 void LightCtr::report() {
+    comPtr->debug("LightCtr::report() ");
+    reportRepeat(0);
+}
+
+void LightCtr::reportRepeat(float delayTime) {
+    //int intDelayTime = int(delayTime);
     comPtr->out("Red      base: "+String(Red.base)+
         "  power: "+String(Red.power));
     comPtr->out("Green  base: "+String(Green.base)+
@@ -162,38 +211,25 @@ void LightCtr::storeThis(colour inColour){
     //Serial.print(colourStore[inColour][1]);
     //Serial.println(colourStore[inColour][2]);
 }
-void LightCtr::up(){
-    //Serial.println("up");
-    Red.shift(+1);
-    Green.shift(+1);
-    Blue.shift(+1);
+
+void LightCtr::allSet(float inBase) {
+    Red.set((inBase * 0.11) - 0.1);
+    Green.set((inBase * 0.11) - 0.1);
+    Blue.set((inBase * 0.11) - 0.1);
+}
+void LightCtr::redSet(float inBase) {
+    Red.set((inBase * 0.11) - 0.1);
+}
+void LightCtr::greenSet(float inBase) {
+    Green.set((inBase * 0.11) - 0.1);
+}
+void LightCtr::blueSet(float inBase) {
+    Blue.set((inBase * 0.11) - 0.1);
 }
 
-void LightCtr::down(){
-    //Serial.println("down");
-    Red.shift(-1);
-    Green.shift(-1);
-    Blue.shift(-1);
-}
-void LightCtr::on (){ //off
-    //Serial.println("on");
-    Red.set(0.5);
-    Green.set(0.5);
-    Blue.set(0.5);
-}
-void LightCtr::off (){ //off
-    //Serial.println("off");
-    Red.set(-1);
-    Green.set(-1);
-    Blue.set(-1);
+void LightCtr::fadeOff() {
     ctrMode = STATIC;
 }
-void LightCtr::red   () { Red.shift(+1);}
-void LightCtr::green () { Green.shift(+1); }
-void LightCtr::white () { Blue.shift(+1); }
-void LightCtr::orange() { Red.shift(-1); }
-void LightCtr::yellow() { Green.shift(-1); }
-void LightCtr::purple() { Blue.shift(-1); }
 
 void LightCtr::allBot(){
     Red.set(0);
@@ -207,10 +243,13 @@ void LightCtr::allTop(){
 }
 void LightCtr::redBot() { Red.set(0);}
 void LightCtr::redTop() { Red.set(1);}
+void LightCtr::redOff() { Red.set(-1);}
 void LightCtr::greenBot() { Green.set(0);}
 void LightCtr::greenTop() { Green.set(1);}
+void LightCtr::greenOff() { Green.set(-1);}
 void LightCtr::blueBot() { Blue.set(0);}
 void LightCtr::blueTop() { Blue.set(1);}
+void LightCtr::blueOff() { Blue.set(-11);}
 void LightCtr::lowerBot() {
     Red.changeLower(-1, 1);
     Green.changeLower(-1, 1);
@@ -242,65 +281,89 @@ void LightCtr::delayTop() {
     comPtr->out("delay= "+String(delay));
 }
 
-void LightCtr::jump3 () {
-    //Serial.println("jump3()");
+void LightCtr::allUp(){
+    Red.shift(+1);
+    Green.shift(+1);
+    Blue.shift(+1);
+}
+
+void LightCtr::allDown(){
+    Red.shift(-1);
+    Green.shift(-1);
+    Blue.shift(-1);
+}
+void LightCtr::on (){ //off
+    Red.set(0.5);
+    Green.set(0.5);
+    Blue.set(0.5);
+}
+void LightCtr::off (){ //off
+    Red.set(-1);
+    Green.set(-1);
+    Blue.set(-1);
+}
+void LightCtr::redUp   () { Red.shift(+1);}
+void LightCtr::greenUp () { Green.shift(+1); }
+void LightCtr::blueUp () { Blue.shift(+1); }
+void LightCtr::redDown() { Red.shift(-1); }
+void LightCtr::greenDown() { Green.shift(-1); }
+void LightCtr::blueDown() { Blue.shift(-1); }
+void LightCtr::store1 () {
     if (holdCount == 0) {
         retrieveStore(RED);
     } else if (holdCount == 4) {
         storeThis(RED);
     }
-    //Serial.print("holdCount ");
-    //Serial.println(holdCount);
+    ctrMode = STATIC;
 }
-void LightCtr::jump7 () {
+void LightCtr::store2 () {
     if (holdCount == 0) {
         retrieveStore(GREEN);
     } else if (holdCount == 4) {
         storeThis(GREEN);
     }
+    ctrMode = STATIC;
 }
-void LightCtr::fade3 () {
+void LightCtr::store3 () {
     if (holdCount == 0) {
         retrieveStore(BLUE);
     } else if (holdCount == 4) {
         storeThis(BLUE);
     }
+    ctrMode = STATIC;
 }
-void LightCtr::fade4 () {
+void LightCtr::store4 () {
     if (holdCount == 0) {
         retrieveStore(WHITE);
     } else if (holdCount == 4) {
         storeThis(WHITE);
     }
+    ctrMode = STATIC;
 }
-void LightCtr::m1    () {
+void LightCtr::lin    () {
     ctrMode = FADE;
     Light::fMode = Light::LIN;
-    //Serial.println(Light::fMode);
     Red.flashOff();
     Green.flashOff();
     Blue.flashOff();
 }
-void LightCtr::m2    () {
+void LightCtr::sin    () {
     ctrMode = FADE;
     Light::fMode = Light::SIN;
-    //Serial.println(Light::fMode);
     Red.flashOff();
     Green.flashOff();
     Blue.flashOff();
 }
-void LightCtr::m3    () {
+void LightCtr::exp    () {
     ctrMode = FADE;
     Light::fMode = Light::EXP;
-    //Serial.println(Light::fMode);
     Red.flashOff();
     Green.flashOff();
     Blue.flashOff();
 }
-void LightCtr::m4    () {
+void LightCtr::sinExp    () {
     ctrMode = FADE;
     Light::fMode = Light::EXPSIN;
-    //Serial.println(Light::fMode);
     Red.flashOff();
     Green.flashOff();
     Blue.flashOff();
@@ -329,15 +392,11 @@ void LightCtr::yellow_f(){
 void LightCtr::white_f(){
     delay *= 4;
     checkDelay();
-    //Serial.print("delay  ");
-    //Serial.println(delay);
 }
 void LightCtr::purple_f(){
     delay /= 4;
     checkDelay();
     comPtr->out("delay= "+String(delay));
-    //Serial.print("delay  ");
-    //Serial.println(delay);
 }
 void LightCtr::checkDelay(){
     if (delay > CONFIG::DELAY_MAX) {
@@ -356,4 +415,4 @@ void LightCtr::checkDelay(){
         Blue.flashOff();
         Serial.println(delay);
 }
-
+void LightCtr::null(){};

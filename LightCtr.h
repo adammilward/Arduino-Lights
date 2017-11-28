@@ -24,17 +24,22 @@ public:
     static Light Green;
     static Light Blue;
 
-    SerialCom *comPtr;
+    SerialCom *comPtr = 0;
 
     enum controllerMode { STATIC, FADE };
     controllerMode ctrMode = controllerMode::STATIC;
 
-    int delay = CONFIG::DELAY_MIN*2;
+    int fadeDelay = CONFIG::DELAY_MIN*2;
+    unsigned long waitMillisLights = 0; // for timeing the next event.
+
+    unsigned int reportDelay = 0;
+    unsigned long waitMillisReport = 0;
 
     bool actionSerial(String*, int);
     bool actionRemote(unsigned long);
     void interrupt();
     byte holdCount = 0;          // count how long button pressed
+    void report();
 
 private:
 
@@ -49,8 +54,8 @@ private:
     };
     float tempStore[3] = {0,0,0}; // for light power while holding
 
-    void report();
-    void reportRepeat(float delay = 0);
+
+    void setReportDelay(float delay = 0);
     void retrieveStore(colour);
     void storeThis(colour);
     void half();
@@ -61,6 +66,8 @@ private:
     bool parseTwoWords(String*);
     bool actionWordAndFloat(String*, float);
     bool isNum(String*);
+
+    void help();
 
     byte remoteAliasLength = 20;
     String remoteAlias[20] = {
@@ -75,18 +82,18 @@ private:
     typedef void (LightCtr::*PTR)();
     typedef void (LightCtr::*PTR_f)(float);
 
-    const static byte singleLength = 8;
-    String oneWordCommands[singleLength] = {
+    const static byte oneWordLength = 8;
+    String oneWordCommands[oneWordLength] = {
             "report",
             "top",
-            "bottom"
+            "bottom",
             "static",
             "lin",
             "sin",
             "exp",
             "sinexp"
     };
-    PTR oneWordActions[singleLength]{
+    PTR oneWordActions[oneWordLength]{
         &LightCtr::report,
         &LightCtr::allTop,
         &LightCtr::allBot,
@@ -107,21 +114,22 @@ private:
             "up", "down", "bottom", "top", "off"
     };
 
-    const static byte wordAndFloatLength = 5;
+    const static byte wordAndFloatLength = 6;
     String wordAndFloatCommands[wordAndFloatLength] = {
             "report",
             "all",
             "red",
             "green",
             "blue",
-
+            "delay"
     };
     PTR_f wordAndFloatActions[wordAndFloatLength] = {
-            &LightCtr::reportRepeat,
+            &LightCtr::setReportDelay,
             &LightCtr::allSet,
             &LightCtr::redSet,
             &LightCtr::greenSet,
             &LightCtr::blueSet,
+            &LightCtr::delaySet,
     };
 
     PTR twoWordActions[firstOfTwoLength][secondOfTwoLength]{
@@ -131,7 +139,7 @@ private:
 {&LightCtr::blueUp, &LightCtr::blueDown, &LightCtr::blueBot, &LightCtr::blueTop, &LightCtr::blueOff},// blue
 {&LightCtr::red_f, &LightCtr::orange_f, &LightCtr::lowerBot, &LightCtr::lowerTop, &LightCtr::null},// lower
 {&LightCtr::green_f, &LightCtr::yellow_f, &LightCtr::upperBot, &LightCtr::upperTop, &LightCtr::null },// upper
-{&LightCtr::white_f, &LightCtr::purple_f, &LightCtr::delayBot, &LightCtr::delayTop, &LightCtr::null }// delay
+{&LightCtr::white_f, &LightCtr::purple_f, &LightCtr::delayBot, &LightCtr::delayTop, &LightCtr::null }// fadeDelay
     };
 
     unsigned long int codes[20] = {
@@ -172,6 +180,7 @@ void allSet(float);
 void redSet(float);
 void greenSet(float);
 void blueSet(float);
+void delaySet(float);
 
 void allBot(); void allTop();
 void redBot(); void redTop(); void redOff();

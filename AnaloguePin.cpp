@@ -14,10 +14,9 @@ AnaloguePin::AnaloguePin() {
     factor = 0;
 }
 
-void AnaloguePin::set(int inPin, float conversionFactor, String inName) {
+void AnaloguePin::set(int inPin, float conversionFactor) {
     pinNo = inPin;
     factor = conversionFactor;
-    name = inName;
 }
 
 float AnaloguePin::read() {

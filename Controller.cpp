@@ -14,6 +14,39 @@ Controller::Controller(SerialCom *inComRef) {
     //FadeLightCtr Fader;
 }
 
+void Controller::timer(unsigned long millis) {
+    // the time should call a timer function in each of the sub controllers
+    // these then decide what to do, as it is out of scope for master controller
+    if (lightCtr.ctrMode != LightCtr::STATIC &&
+            (signed long)(millis - lightCtr.waitMillisLights) >= 0
+    )
+    {
+        lightCtr.waitMillisLights = millis + lightCtr.fadeDelay;
+        lightCtr.interrupt();
+    }
+    else if ( lightCtr.reportDelay > 0 &&
+            (signed long)(millis - lightCtr.waitMillisReport) >= 0
+    )
+    {
+        comPtr->debug("waitMillisReport= "+String(lightCtr.waitMillisReport));
+        comPtr->debug("reportDelay= "+String(lightCtr.reportDelay));
+        comPtr->debug("millis= "+String(millis));
+        comPtr->debug(String(long(millis - lightCtr.reportDelay)));
+        lightCtr.report();
+        lightCtr.waitMillisReport = millis + lightCtr.reportDelay;
+    }
+    else if ( statusCtr.reportDelay > 0 &&
+            (signed long)(millis - statusCtr.waitMillisReport) >= 0
+    )
+    {
+        comPtr->debug("waitMillisReport= "+String(statusCtr.waitMillisReport));
+        comPtr->debug("reportDelay= "+String(statusCtr.reportDelay));
+        comPtr->debug("millis= "+String(millis));
+        comPtr->debug(String(long(millis - statusCtr.reportDelay)));
+        statusCtr.report();
+        statusCtr.waitMillisReport = millis + statusCtr.reportDelay;
+    }
+}
 
 void Controller::serialReceive(String data) {
     int firstWordIndex = 0; // where in the array we start

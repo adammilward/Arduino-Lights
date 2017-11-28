@@ -12,7 +12,7 @@ Light LightCtr::Green(CONFIG::GREEN_PIN, 1);
 Light LightCtr::Blue(CONFIG::BLUE_PIN, 2);
 
 LightCtr::LightCtr() {
-    comPtr = 0;
+
 }
 
 void LightCtr::setCom(SerialCom *inCom) {
@@ -31,29 +31,52 @@ bool LightCtr::actionSerial(String* firstWordPtr, int arrayLength){
         actioned = parseTwoWords(firstWordPtr);
     }
     if (!actioned) {
-        comPtr->out("Command not recognised, options are:");
-        comPtr->out("the name of a button on the remote;");
-        comPtr->out("'report';");
-        comPtr->out("'red/green/blue/all'  'up/down/top/bottom'; ");
-        comPtr->out("setting with numbers has not been configured");
+        help();
     }
     return actioned;
 }
 
-bool LightCtr::actionOneWord(String* word){
-    int i = remoteAliasLength;
-    while (i --) {
-        comPtr->debug("mode= "+String(ctrMode)+" index= "+String(i));
-        if (remoteAlias[i] == *word) {
-            (this->*actions[ctrMode][i])();
-            return true;
-        }
+void LightCtr::help() {
+    comPtr->out("Command not recognised, options are:");
+    comPtr->out("the name of a button on the remote");
+    comPtr->out("");
+    comPtr->out("- or");
+    comPtr->out("- Single Word Commands ");
+    int i = oneWordLength;
+    while (i--) {
+       comPtr->out(String(oneWordCommands[i]));
     }
-    i = singleLength;
-    while (i --) {
+    comPtr->out("");
+    comPtr->out("- or");
+    comPtr->out("-   word + number ");
+    i = wordAndFloatLength;
+    while (i--) {
+       comPtr->out(String(wordAndFloatCommands[i])+" [nn]");
+    }
+    comPtr->out("eg. 'report 10';");
+    comPtr->out("");
+    comPtr->out("- or");
+    comPtr->out("- Two Word Commands");
+    comPtr->out("all|red|green|blue|lower|upper|delay");
+    comPtr->out("+");
+    comPtr->out("up|down|top|bottom");
+    comPtr->out("eg. delay top");
+}
+
+bool LightCtr::actionOneWord(String* word){
+    int i = oneWordLength;
+    while (i--) {
         comPtr->debug("single words index = "+String(i));
         if (oneWordCommands[i] == *word) {
             (this->*oneWordActions[i])();
+            return true;
+        }
+    }
+    i = remoteAliasLength;
+    while (i--) {
+        comPtr->debug("mode= "+String(ctrMode)+" index= "+String(i));
+        if (remoteAlias[i] == *word) {
+            (this->*actions[ctrMode][i])();
             return true;
         }
     }
@@ -61,7 +84,7 @@ bool LightCtr::actionOneWord(String* word){
 }
 
 bool LightCtr::parseTwoWords(String* firstWordPtr) {
-    if (isNum((firstWordPtr+1))) {
+    if (comPtr->isNum((firstWordPtr+1))) {
         float value = (firstWordPtr+1)->toFloat();
         return actionWordAndFloat(firstWordPtr, value);
     } else {
@@ -69,24 +92,10 @@ bool LightCtr::parseTwoWords(String* firstWordPtr) {
     }
 }
 
-bool LightCtr::isNum(String* word) {
-    boolean isNum=false;
-    for(byte i = 0 ; i < word->length() ; i++)
-    {
-        isNum = (
-                isDigit(word->charAt(i)) ||
-                word->charAt(i) == '+' ||
-                word->charAt(i) == '.' ||
-                word->charAt(i) == '-');
-        if(!isNum) return false;
-    }
-    return isNum;
-}
-
 bool LightCtr::actionWordAndFloat(String* word, float value) {
     comPtr->debug("first word: "+*word);
     comPtr->debug("value= "+String(value));
-    int i = singleLength;
+    int i = oneWordLength;
     while (i--) {
         comPtr->debug("single words index = "+String(i));
         if (wordAndFloatCommands[i] == *word) {
@@ -118,9 +127,6 @@ bool LightCtr::actionTwoWords(String* firstWordPtr) {
 
 bool LightCtr::actionRemote(unsigned long inValue){
     for (int i = 0; i < 20; i++) {
-        //Serial.print(ctrMode);
-        //Serial.print("    ");
-        //Serial.println(i);
         if (codes[i] == inValue) {
             (this->*actions[ctrMode][i])();
             return true;
@@ -129,13 +135,15 @@ bool LightCtr::actionRemote(unsigned long inValue){
     return false;
 }
 
-void LightCtr::report() {
-    comPtr->debug("LightCtr::report() ");
-    reportRepeat(0);
+void LightCtr::setReportDelay(float delaySeconds) {
+    comPtr->debug("LightCtr::setReportDelay() ");
+    comPtr->debug(String(delaySeconds));
+    reportDelay = (unsigned int)(delaySeconds * 1000);
+    waitMillisReport = millis() + reportDelay;
+    report();
 }
 
-void LightCtr::reportRepeat(float delayTime) {
-    //int intDelayTime = int(delayTime);
+void LightCtr::report() {
     comPtr->out("Red      base: "+String(Red.base)+
         "  power: "+String(Red.power));
     comPtr->out("Green  base: "+String(Green.base)+
@@ -156,8 +164,9 @@ void LightCtr::reportRepeat(float delayTime) {
     } else {
         comPtr->outWd("FadeMode: ");
         comPtr->outWd(Light::fadeModes[Light::fMode]);
-        comPtr->out("Delay: "+String(delay));
+        comPtr->out("Delay: "+String(fadeDelay));
     }
+    comPtr->out("report delay millis= "+String(reportDelay));
 }
 
 void LightCtr::interrupt(){
@@ -271,14 +280,19 @@ void LightCtr::upperTop() {
     Blue.changeUpper(1, 1);
 }
 void LightCtr::delayBot(){
-    delay = CONFIG::DELAY_MIN-1;
+    fadeDelay = CONFIG::DELAY_MIN-1;
     checkDelay();
-    comPtr->out("delay= "+String(delay));
+    comPtr->out("delay= "+String(fadeDelay));
 }
 void LightCtr::delayTop() {
-    delay = CONFIG::DELAY_MAX+1;
+    fadeDelay = CONFIG::DELAY_MAX+1;
     checkDelay();
-    comPtr->out("delay= "+String(delay));
+    comPtr->out("delay= "+String(fadeDelay));
+}
+void LightCtr::delaySet(float inDelay) {
+    fadeDelay = (int)inDelay;
+    checkDelay();
+    comPtr->out("delay= "+String(fadeDelay));
 }
 
 void LightCtr::allUp(){
@@ -390,22 +404,22 @@ void LightCtr::yellow_f(){
     Blue.changeUpper(-1, 0.2);
 }
 void LightCtr::white_f(){
-    delay *= 4;
+    fadeDelay *= 4;
     checkDelay();
 }
 void LightCtr::purple_f(){
-    delay /= 4;
+    fadeDelay /= 4;
     checkDelay();
-    comPtr->out("delay= "+String(delay));
+    comPtr->out("delay= "+String(fadeDelay));
 }
 void LightCtr::checkDelay(){
-    if (delay > CONFIG::DELAY_MAX) {
-        delay = CONFIG::DELAY_MAX;
+    if (fadeDelay > CONFIG::DELAY_MAX) {
+        fadeDelay = CONFIG::DELAY_MAX;
         Red.flashHalf();
         Green.flashHalf();
         Blue.flashHalf();
-    } else if (delay < CONFIG::DELAY_MIN) {
-        delay = CONFIG::DELAY_MIN;
+    } else if (fadeDelay < CONFIG::DELAY_MIN) {
+        fadeDelay = CONFIG::DELAY_MIN;
         Red.flashHalf();
         Green.flashHalf();
         Blue.flashHalf();
@@ -413,6 +427,6 @@ void LightCtr::checkDelay(){
         Red.flashOff();
         Green.flashOff();
         Blue.flashOff();
-        Serial.println(delay);
+        Serial.println(fadeDelay);
 }
 void LightCtr::null(){};

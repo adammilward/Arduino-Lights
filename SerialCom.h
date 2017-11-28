@@ -23,11 +23,16 @@ public:
 
     static SoftwareSerial BT;
 
+    bool isNum(String*);
     void out(String);
     void outWd(String);
     void debug(String);
     void debugWd(String);
     bool actionSerial(String*, int);
+
+private:
+
+
 };
 
 #endif /* SERIALCOM_H_ */

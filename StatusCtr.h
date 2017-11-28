@@ -16,13 +16,18 @@ public:
 
     SerialCom* comPtr;
 
+    unsigned int reportDelay = 0;
+    unsigned long waitMillisReport = 0;
+
     void setCom(SerialCom*);
     bool actionSerial(String*, int);
+    void report();
+
 
 private:
     VoltMeter voltMeter;
 
     void processData(String);
-    void report();
+    void setReportDelay(float);
 };
 #endif /* STATUSCTR_H_ */

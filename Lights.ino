@@ -14,9 +14,6 @@ Controller masterCtr(&com);      // handles the remotes
 // Connect the HC-05 TX to the Arduino RX on pin 12.
 // Connect the HC-05 RX to the Arduino TX on pin 3 through a voltage divider.
 
-//int DELAY = CONFIG::DELAY;  // delay in miliseconds
-unsigned long waitMillisLights; // for timeing the next event.
-
 void setup() {
     randomSeed(analogRead(0)); // initialise for random numbers
 	irrecv.enableIRIn(); // Start the receiver
@@ -30,7 +27,6 @@ void setup() {
 	//in the middle and call the "Compare A" function below
 	//OCR0A = 0x80;
 	//TIMSK0 |= _BV(OCIE0A);
-	waitMillisLights = millis() + masterCtr.lightCtr.delay;
 
     delay(100);
     masterCtr.lightCtr.Red.set(0);
@@ -54,14 +50,8 @@ SIGNAL(TIMER0_COMPA_vect) {
 // The loop function is called in an endless loop
 void loop() {
 
-    // run fading
-    if (masterCtr.lightCtr.ctrMode != LightCtr::STATIC) {
-        if ((long) (millis() - waitMillisLights) >= 0) {
-            // set the time for next interupt
-            waitMillisLights = millis() + masterCtr.lightCtr.delay;
-            masterCtr.lightCtr.interrupt();
-        }
-    }
+
+    masterCtr.timer(millis());
 
     // run IR Commandes
 	if (irrecv.decode(&Results)) {

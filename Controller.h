@@ -24,7 +24,7 @@ public:
     static SoftwareSerial BTs;
     void irReceive(unsigned long value);
     void serialReceive(String data);
-
+    void timer(unsigned long);
 private:
 
     enum IRMode {IR_LIGHTS, IR_MP3};

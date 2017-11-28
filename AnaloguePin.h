@@ -15,9 +15,8 @@ public:
     AnaloguePin();
     int pinNo;
     float factor;
-    String name;
     float read();
-    void set(int, float, String);
+    void set(int, float);
     // sets the conversion factor an pin number
 
 private:

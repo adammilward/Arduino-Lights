@@ -35,6 +35,20 @@ bool SerialCom::actionSerial(String* firstWordPtr , int commandLength) {
     return true;
 }
 
+bool SerialCom::isNum(String* word) {
+    boolean isNum=false;
+    for(byte i = 0 ; i < word->length() ; i++)
+    {
+        isNum = (
+                isDigit(word->charAt(i)) ||
+                word->charAt(i) == '+' ||
+                word->charAt(i) == '.' ||
+                word->charAt(i) == '-');
+        if(!isNum) return false;
+    }
+    return isNum;
+}
+
 void SerialCom::debug(String word1) {
     if (mode == VERBOSE) out(word1);
 }

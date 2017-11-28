@@ -24,7 +24,6 @@ public:
     AnaloguePin aPin4;
     AnaloguePin* allPinsPtr[5] = {&aPin0, &aPin1, &aPin2, &aPin3, &aPin4};
 
-    String getName(int);
     String getVoltage(int pinNumber);
 };
 

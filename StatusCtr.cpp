@@ -7,42 +7,49 @@
 
 #include "StatusCtr.h"
 StatusCtr::StatusCtr(){
-    comPtr = NULL;
+    comPtr = 0;
 }
 
 void StatusCtr::setCom(SerialCom* inComRef) {
     comPtr = inComRef;
 }
 
-void StatusCtr::processData(String data) {
-
-    if (data.indexOf("report") == -1) {
-        report();
-    } else if (data.indexOf("report") == -1) {
-
-    }
-}
-
-bool StatusCtr::actionSerial(String* firstWordPtr , int commandLength) {
+bool StatusCtr::actionSerial(String* firstWordPtr , int arrayLength) {
     comPtr->debug("StatusCtr::actionSerial");
     comPtr->debug("firstWordPtr = " + *firstWordPtr);
-    comPtr->debug("command length = " + String(commandLength));
+    comPtr->debug("command length = " + String(arrayLength));
     if (*(firstWordPtr) == "report") {
-        comPtr->out(" - Status Report - ");
-        report();
+        if (arrayLength == 2 && comPtr->isNum(firstWordPtr+1)) {
+            float value = (firstWordPtr+1)->toFloat();
+            comPtr->debug("value= "+String(value));
+            setReportDelay(value);
+        } else {
+            report();
+        }
     } else {
         comPtr->out("Status Controller commands are:");
-        comPtr->out("report");
+        comPtr->out("report [nn]");
+        comPtr->out("where repeat delay in s");
         return false;
     }
     return true;
 }
 
+void StatusCtr::setReportDelay(float delaySeconds) {
+    comPtr->debug("LightCtr::setReportDelay() ");
+    comPtr->debug(String(delaySeconds));
+    reportDelay = (unsigned int)(delaySeconds * 1000);
+    waitMillisReport = millis() + reportDelay;
+    report();
+}
+
 void StatusCtr::report() {
-    comPtr->debug("StatusCtr::report()");
-    comPtr->out(voltMeter.getName(0) + ": " + voltMeter.getVoltage(0) + "V");
-    comPtr->out(voltMeter.getName(1) + ": " + voltMeter.getVoltage(1) + "V");
-    comPtr->out(voltMeter.getName(2) + ": " + voltMeter.getVoltage(2) + "V");
-    comPtr->out(voltMeter.getName(3) + ": " + voltMeter.getVoltage(3) + "V");
-    comPtr->out(voltMeter.getName(4) + ": " + voltMeter.getVoltage(4) + "V");
+    comPtr->out("");
+    comPtr->out("    ****    ");
+    comPtr->out("SolarPanels: " + voltMeter.getVoltage(0) + "V");
+    comPtr->out("ConsumerUnit: " + voltMeter.getVoltage(1) + "V");
+    comPtr->out("LeisueBattery: " + voltMeter.getVoltage(2) + "V");
+    comPtr->out("BanBattery: " + voltMeter.getVoltage(3) + "V");
+    comPtr->out("spare: " + voltMeter.getVoltage(4) + "V");
+    comPtr->out("delay= "+String(reportDelay/1000));
 }

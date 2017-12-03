@@ -26,8 +26,6 @@ public:
     bool isNum(String*);
     void out(String);
     void outWd(String);
-    void debug(String);
-    void debugWd(String);
     bool actionSerial(String*, int);
 
 private:

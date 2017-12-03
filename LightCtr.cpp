@@ -23,7 +23,6 @@ void LightCtr::setCom(SerialCom *inCom) {
 }
 
 bool LightCtr::actionSerial(String* firstWordPtr, int arrayLength){
-    comPtr->debug("array length = "+String(arrayLength));
     bool actioned = false;
     if (1 == arrayLength) {
         actioned = actionOneWord(firstWordPtr);
@@ -66,7 +65,6 @@ void LightCtr::help() {
 bool LightCtr::actionOneWord(String* word){
     int i = oneWordLength;
     while (i--) {
-        comPtr->debug("single words index = "+String(i));
         if (oneWordCommands[i] == *word) {
             (this->*oneWordActions[i])();
             return true;
@@ -74,7 +72,6 @@ bool LightCtr::actionOneWord(String* word){
     }
     i = remoteAliasLength;
     while (i--) {
-        comPtr->debug("mode= "+String(ctrMode)+" index= "+String(i));
         if (remoteAlias[i] == *word) {
             (this->*actions[ctrMode][i])();
             return true;
@@ -93,13 +90,9 @@ bool LightCtr::parseTwoWords(String* firstWordPtr) {
 }
 
 bool LightCtr::actionWordAndFloat(String* word, float value) {
-    comPtr->debug("first word: "+*word);
-    comPtr->debug("value= "+String(value));
     int i = oneWordLength;
     while (i--) {
-        comPtr->debug("single words index = "+String(i));
         if (wordAndFloatCommands[i] == *word) {
-            comPtr->debug("processing word with float");
             (this->*wordAndFloatActions[i])(value);
             return true;
         }
@@ -110,11 +103,9 @@ bool LightCtr::actionWordAndFloat(String* word, float value) {
 bool LightCtr::actionTwoWords(String* firstWordPtr) {
     int i = firstOfTwoLength;
     while (i --) {
-        comPtr->debug("first word index= "+String(i));
         if (firstOfTwoCommands[i] == *firstWordPtr) {
             int j = secondOfTwoLength;
             while (j--) {
-                comPtr->debug("second word index index= "+String(j));
                 if (secondOfTwoCommands[j] == *(firstWordPtr+1)) {
                     (this->*twoWordActions[i][j])();
                     return true;
@@ -136,8 +127,6 @@ bool LightCtr::actionRemote(unsigned long inValue){
 }
 
 void LightCtr::setReportDelay(float delaySeconds) {
-    comPtr->debug("LightCtr::setReportDelay() ");
-    comPtr->debug(String(delaySeconds));
     reportDelay = (unsigned int)(delaySeconds * 1000);
     waitMillisReport = millis() + reportDelay;
     report();
@@ -183,9 +172,6 @@ void LightCtr::interrupt(){
         Blue.slide();
         break;
     default:
-comPtr->debugWd(String(Red.base * 100)+"    "+String(Red.power)+"    ");
-comPtr->debugWd(String(Green.base * 100)+"    "+String(Green.power)+"    ");
-comPtr->debug(String(Blue.base * 100)+"    "+String(Blue.power)+"    ");
         counter = 0;
         break;
     }

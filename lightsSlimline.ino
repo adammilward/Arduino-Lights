@@ -63,12 +63,10 @@ void loop() {
     while (Serial.available()) {
         String command = Serial.readStringUntil('\n');
         masterCtr.serialReceive(command);
-        com.debug("end Serial.available");
     }
     while (com.BT.available()) {
         String command = com.BT.readStringUntil('\r');
         masterCtr.serialReceive(command);
-        com.debug("end Serial.available");
     }
 }
 

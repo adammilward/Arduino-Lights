@@ -28,10 +28,6 @@ void Controller::timer(unsigned long millis) {
             (signed long)(millis - lightCtr.waitMillisReport) >= 0
     )
     {
-        comPtr->debug("waitMillisReport= "+String(lightCtr.waitMillisReport));
-        comPtr->debug("reportDelay= "+String(lightCtr.reportDelay));
-        comPtr->debug("millis= "+String(millis));
-        comPtr->debug(String(long(millis - lightCtr.reportDelay)));
         lightCtr.report();
         lightCtr.waitMillisReport = millis + lightCtr.reportDelay;
     }
@@ -39,10 +35,6 @@ void Controller::timer(unsigned long millis) {
             (signed long)(millis - statusCtr.waitMillisReport) >= 0
     )
     {
-        comPtr->debug("waitMillisReport= "+String(statusCtr.waitMillisReport));
-        comPtr->debug("reportDelay= "+String(statusCtr.reportDelay));
-        comPtr->debug("millis= "+String(millis));
-        comPtr->debug(String(long(millis - statusCtr.reportDelay)));
         statusCtr.report();
         statusCtr.waitMillisReport = millis + statusCtr.reportDelay;
     }
@@ -55,8 +47,6 @@ void Controller::serialReceive(String data) {
 
     data.toLowerCase();
     data.trim();
-    comPtr->debug("****************");
-    comPtr->debug("serialRecieve: " + data);
 
     if (checkForRepeat(data)) {
         return;
@@ -75,9 +65,6 @@ void Controller::serialReceive(String data) {
         newCommand[commandLength] = data;
         commandLength++; // record number of words found
     }
-    comPtr->debug(String(commandLength) + " words found");
-    comPtr->debug("newCommand array: ");
-    for ( int i = 0 ; i < commandLength ; i++ ) comPtr->debug(newCommand[i]);
 
 
     if (checkForMode(&newCommand[0], 1)) {
@@ -87,20 +74,8 @@ void Controller::serialReceive(String data) {
 
     // if there are more commands to run
     if (commandLength > 0) {
-        if (processSerial(&newCommand[firstWordIndex], commandLength)) {
-            comPtr->debug("seccusesfull processSerial");
-        }
-    } else {
-        comPtr->debug("no more commands");
+        (processSerial(&newCommand[firstWordIndex], commandLength));
     }
-
-    comPtr->debug("newCommand array after mode: ");
-    for (int i = firstWordIndex; i <= commandLength; i++ ) comPtr->debug(newCommand[i]);
-
-    comPtr->debug("lastCommand array  afte mode: ");
-    for (int i = 0 ; i < lastCommandLength; i++ ) comPtr->debug(lastCommand[i]);
-
-
 }
 
 bool Controller::checkForRepeat(String data)  {
@@ -111,7 +86,6 @@ bool Controller::checkForRepeat(String data)  {
 }
 
 bool Controller::checkForMode(String* wordPtr, int length)  {
-    comPtr->debug("checkForMode: input = " + *wordPtr);
 
     if (*wordPtr == "lights") {
         mode = LIGHTS;
@@ -126,7 +100,6 @@ bool Controller::checkForMode(String* wordPtr, int length)  {
         comPtr->out("Com Mode engaged");
         return true;
     }
-    comPtr->debug("checkForMode: no mode set");
     return false;
 }
 
@@ -185,8 +158,6 @@ void Controller::irDecode(unsigned long inValue, int inHCount){
         storedCode = inValue;
     } else {
         storedCode = 0;
-        comPtr->debug("value not recognised");
-        comPtr->debug(String(inValue, HEX));
     }
 }
 

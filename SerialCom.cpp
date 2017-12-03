@@ -16,9 +16,6 @@ SerialCom::SerialCom() {
 
 
 bool SerialCom::actionSerial(String* firstWordPtr , int commandLength) {
-    debug("SerialCom::actionSerial");
-    debug("firstWordPtr = " + *firstWordPtr);
-
     if (*(firstWordPtr) == "normal") {
         mode = NORMAL;
         out("com mode set to 'normal'");
@@ -47,13 +44,6 @@ bool SerialCom::isNum(String* word) {
         if(!isNum) return false;
     }
     return isNum;
-}
-
-void SerialCom::debug(String word1) {
-    if (mode == VERBOSE) out(word1);
-}
-void SerialCom::debugWd(String word1) {
-    if (mode == VERBOSE) outWd(word1);
 }
 
 void SerialCom::out(String output) {

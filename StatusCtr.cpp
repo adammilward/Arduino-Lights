@@ -15,13 +15,9 @@ void StatusCtr::setCom(SerialCom* inComRef) {
 }
 
 bool StatusCtr::actionSerial(String* firstWordPtr , int arrayLength) {
-    comPtr->debug("StatusCtr::actionSerial");
-    comPtr->debug("firstWordPtr = " + *firstWordPtr);
-    comPtr->debug("command length = " + String(arrayLength));
     if (*(firstWordPtr) == "report") {
         if (arrayLength == 2 && comPtr->isNum(firstWordPtr+1)) {
             float value = (firstWordPtr+1)->toFloat();
-            comPtr->debug("value= "+String(value));
             setReportDelay(value);
         } else {
             report();
@@ -36,8 +32,6 @@ bool StatusCtr::actionSerial(String* firstWordPtr , int arrayLength) {
 }
 
 void StatusCtr::setReportDelay(float delaySeconds) {
-    comPtr->debug("LightCtr::setReportDelay() ");
-    comPtr->debug(String(delaySeconds));
     reportDelay = (unsigned int)(delaySeconds * 1000);
     waitMillisReport = millis() + reportDelay;
     report();

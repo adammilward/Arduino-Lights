@@ -27,6 +27,7 @@ Light::Light(
 	range = inUpper - inLower; // range between 0 and 1
 	lower = inLower * 254 + 1;
 	base = inUpper;
+	set(0.2);
 }
 
 void Light::setCom(SerialCom *inCom) {

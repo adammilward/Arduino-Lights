@@ -29,9 +29,9 @@ void setup() {
 	//TIMSK0 |= _BV(OCIE0A);
 
     delay(100);
-    masterCtr.lightCtr.Red.set(0);
-    masterCtr.lightCtr.Green.set(0);
-    masterCtr.lightCtr.Blue.set(0);
+    masterCtr.lightCtr.Red.set(-1);
+    masterCtr.lightCtr.Green.set(-1);
+    masterCtr.lightCtr.Blue.set(-1);
 
 }
 

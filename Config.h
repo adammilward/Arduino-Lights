@@ -16,13 +16,13 @@ public:
     static const byte BT_TX = 13;
     static const byte COMMAND_MAX_LENGTH = 5;
 
-    static const int DELAY_MIN = 1;
-    static const int DELAY_MAX = 256;
+    static const byte DELAY_MIN = 1;
+    static const unsigned int DELAY_MAX = 256;
     /* Uno */                        //   ________
-    static const int RED_PIN = 9;    //  |   __   |
-    static const int GREEN_PIN = 10;  //  |  /  \  |
-    static const int BLUE_PIN = 11;   //  | |    | |
-    static const int IREC_PIN = 2;  //  out  0  v+
+    static const byte RED_PIN = 9;    //  |   __   |
+    static const byte GREEN_PIN = 10;  //  |  /  \  |
+    static const byte BLUE_PIN = 11;   //  | |    | |
+    static const byte IREC_PIN = 2;  //  out  0  v+
 
     /* Mega
     static const int RED_PIN = 10;

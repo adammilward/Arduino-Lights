@@ -46,11 +46,43 @@ bool SerialCom::isNum(String* word) {
     return isNum;
 }
 
+
+void SerialCom::out(byte output) {
+    Serial.println(output);
+    BT.println(output);
+}
+void SerialCom::outWd(byte output) {
+    Serial.print(output);
+    BT.print(output);
+}
+void SerialCom::out(unsigned int output) {
+    Serial.println(output);
+    BT.println(output);
+}
+void SerialCom::outWd(unsigned int output) {
+    Serial.print(output);
+    BT.print(output);
+}
+void SerialCom::out(int output) {
+    Serial.println(output);
+    BT.println(output);
+}
+void SerialCom::outWd(int output) {
+    Serial.print(output);
+    BT.print(output);
+}
+void SerialCom::out(float output) {
+    Serial.println(output);
+    BT.println(output);
+}
+void SerialCom::outWd(float output) {
+    Serial.print(output);
+    BT.print(output);
+}
 void SerialCom::out(String output) {
     Serial.println(output);
     BT.println(output);
 }
-
 void SerialCom::outWd(String output) {
     Serial.print(output);
     BT.print(output);

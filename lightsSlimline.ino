@@ -19,7 +19,7 @@ void setup() {
     irrecv.enableIRIn(); // Start the receiver
     // initialize serial communication at 9600 bits per second:
     Serial.begin(9600);
-    Serial.println("ready to recieve");
+    com.out(F("ready to recieve"));
     SerialCom::BT.begin(9600);
     SerialCom::BT.println("ready to recieve");
 
@@ -32,7 +32,7 @@ void setup() {
     masterCtr.lightCtr.Red.set(-1);
     masterCtr.lightCtr.Green.set(-1);
     masterCtr.lightCtr.Blue.set(-1);
-
+    com.out(F("ready to recieve"));
 }
 
 // Interrupt is called once a millisecond,

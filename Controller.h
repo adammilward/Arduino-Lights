@@ -32,7 +32,7 @@ private:
     enum Mode {LIGHTS, STATUS, COM};
     Mode mode = STATUS;
 
-    int lastCommandLength = 1;
+    byte lastCommandLength = 1;
     String lastCommand[CONFIG::COMMAND_MAX_LENGTH] =  {"repot"};
     unsigned long int storedCode = 0;  // for sending when hold is pressed
 

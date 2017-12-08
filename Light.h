@@ -16,8 +16,8 @@
 class Light{
 public:
 	Light(
-		int inPin,
-		int id,
+		byte inPin,
+		byte id,
 		float inGain = 0,
 		float inLower = 0,
 		float inUpper = 1
@@ -28,20 +28,18 @@ public:
     enum fadeMode { LIN, SIN, EXP, EXPSIN };
     static fadeMode fMode;
 
-    const static String fadeModes[4];
-
 	float base;     // the base value  base <1, for deriving power <0 is off
 	int power;      // led Power 1 to 255 derived from base
     float gain;         // for fading the lights <= 0.002
     float lower;        // lower limit 1 to 255
     float range;        // range/multiplier 0 to
 
-	void shift(int op, float shiftGain = DEF_GAIN);
+	void shift(byte op, float shiftGain = DEF_GAIN);
 	void set(float setBase, bool flash = false);
 	void slide();
 	void toHalf();
-	void changeLower(int op, float change = 0.2);
-	void changeUpper(int op, float change = 0.2);
+	void changeLower(byte op, float change = 0.2);
+	void changeUpper(byte op, float change = 0.2);
 	void flashOff();
 	void flashHalf();
 	void flashOn();
@@ -52,8 +50,8 @@ private:
 
 	static constexpr float DEF_GAIN = 0.1;     // default gain for use with Shift()
 
-	int pin;            // the pin for this colour
-	int id;             // 0 = red 1 = green 2 = blue
+	byte pin;            // the pin for this colour
+	byte id;             // 0 = red 1 = green 2 = blue
 	// below are only used for fading
 	int shiftOp = 1;    // 1 or -1  controls the direction of shift
 

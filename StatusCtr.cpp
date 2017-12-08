@@ -23,9 +23,9 @@ bool StatusCtr::actionSerial(String* firstWordPtr , int arrayLength) {
             report();
         }
     } else {
-        comPtr->out("Status Controller commands are:");
-        comPtr->out("report [nn]");
-        comPtr->out("where repeat delay in s");
+        comPtr->out(F("Status Controller commands are:"));
+        comPtr->out(F("report [nn]"));
+        comPtr->out(F("where repeat delay in s"));
         return false;
     }
     return true;
@@ -38,12 +38,23 @@ void StatusCtr::setReportDelay(float delaySeconds) {
 }
 
 void StatusCtr::report() {
-    comPtr->out("");
-    comPtr->out("    ****    ");
-    comPtr->out("SolarPanels: " + voltMeter.getVoltage(0) + "V");
-    comPtr->out("ConsumerUnit: " + voltMeter.getVoltage(1) + "V");
-    comPtr->out("LeisueBattery: " + voltMeter.getVoltage(2) + "V");
-    comPtr->out("BanBattery: " + voltMeter.getVoltage(3) + "V");
-    comPtr->out("spare: " + voltMeter.getVoltage(4) + "V");
-    comPtr->out("delay= "+String(reportDelay/1000));
+    comPtr->out(F(""));
+    comPtr->out(F("    ****    "));
+    comPtr->outWd(F("SolarPanels: "));
+    comPtr->outWd(voltMeter.getVoltage(0));
+    comPtr->out(F("V"));
+    comPtr->outWd(F("ConsumerUnit: "));
+    comPtr->outWd(voltMeter.getVoltage(1));
+    comPtr->out(F("V"));
+    comPtr->outWd(F("LeisueBattery: "));
+    comPtr->outWd(voltMeter.getVoltage(2));
+    comPtr->out(F("V"));
+    comPtr->outWd(F("BanBattery: "));
+    comPtr->outWd(voltMeter.getVoltage(3));
+    comPtr->out(F("V"));
+    comPtr->outWd("spare: ");
+    comPtr->outWd(voltMeter.getVoltage(4));
+    comPtr->out(F("V"));
+    comPtr->outWd(F("delay= "));
+    comPtr->out((float)reportDelay/1000);
 }

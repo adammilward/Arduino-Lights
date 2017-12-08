@@ -89,15 +89,15 @@ bool Controller::checkForMode(String* wordPtr, int length)  {
 
     if (*wordPtr == "lights") {
         mode = LIGHTS;
-        comPtr->out("Lights Mode engaged");
+        comPtr->out(F("Lights Mode engaged"));
         return true;
     } else if (*wordPtr == "status") {
         mode = STATUS;
-        comPtr->out("Status Mode engaged");
+        comPtr->out(F("Status Mode engaged"));
         return true;
     } else if (*wordPtr == "com") {
         mode = COM;
-        comPtr->out("Com Mode engaged");
+        comPtr->out(F("Com Mode engaged"));
         return true;
     }
     return false;
@@ -119,7 +119,7 @@ bool Controller::processSerial(String* firstWordPtr, int commandLength) {
     if (actioned) {
         copy(firstWordPtr, &lastCommand[0], commandLength);
     } else {
-        comPtr->out("I'm sorry Dave, I'm affraid I can't do that.");
+        comPtr->out(F("I'm sorry Dave, I'm affraid I can't do that."));
     }
     return actioned;
 }

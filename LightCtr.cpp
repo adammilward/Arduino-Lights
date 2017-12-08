@@ -36,30 +36,31 @@ bool LightCtr::actionSerial(String* firstWordPtr, int arrayLength){
 }
 
 void LightCtr::help() {
-    comPtr->out("Command not recognised, options are:");
-    comPtr->out("the name of a button on the remote");
-    comPtr->out("");
-    comPtr->out("- or");
-    comPtr->out("- Single Word Commands ");
+    comPtr->out(F("Command not recognised, options are:"));
+    comPtr->out(F("the name of a button on the remote"));
+    comPtr->out(F(""));
+    comPtr->out(F("- or"));
+    comPtr->out(F("- Single Word Commands "));
     int i = oneWordLength;
     while (i--) {
-       comPtr->out(String(oneWordCommands[i]));
+       comPtr->out(oneWordCommands[i]);
     }
-    comPtr->out("");
-    comPtr->out("- or");
-    comPtr->out("-   word + number ");
+    comPtr->out(F(""));
+    comPtr->out(F("- or"));
+    comPtr->out(F("-   word + number "));
     i = wordAndFloatLength;
     while (i--) {
-       comPtr->out(String(wordAndFloatCommands[i])+" [nn]");
+       comPtr->outWd(wordAndFloatCommands[i]);
+        comPtr->out(F(" [nn]"));
     }
-    comPtr->out("eg. 'report 10';");
-    comPtr->out("");
-    comPtr->out("- or");
-    comPtr->out("- Two Word Commands");
-    comPtr->out("all|red|green|blue|lower|upper|delay");
-    comPtr->out("+");
-    comPtr->out("up|down|top|bottom");
-    comPtr->out("eg. delay top");
+    comPtr->out(F("eg. 'report 10';"));
+    comPtr->out(F(""));
+    comPtr->out(F("- or"));
+    comPtr->out(F("- Two Word Commands"));
+    comPtr->out(F("all|red|green|blue|lower|upper|delay"));
+    comPtr->out(F("+"));
+    comPtr->out(F("up|down|top|bottom"));
+    comPtr->out(F("eg. delay top"));
 }
 
 bool LightCtr::actionOneWord(String* word){
@@ -133,29 +134,55 @@ void LightCtr::setReportDelay(float delaySeconds) {
 }
 
 void LightCtr::report() {
-    comPtr->out("Red      base: "+String(Red.base)+
-        "  power: "+String(Red.power));
-    comPtr->out("Green  base: "+String(Green.base)+
-        "  power: "+String(Green.power));
-    comPtr->out("Blue     base: "+String(Blue.base)+
-        "  power: "+String(Blue.power));
-    comPtr->out("Red      gain: "+String(Red.gain));
-    comPtr->out("Green  gain: "+String(Green.gain));
-    comPtr->out("Blue     gain: "+String(Blue.gain));
-    comPtr->out("Red      lower: "+String(Red.lower)+
-        "  range: "+String(Red.range));
-    comPtr->out("Green  lower: "+String(Green.lower)+
-        "  range: "+String(Green.range));
-    comPtr->out("Blue     lower: "+String(Blue.lower)+
-        "  range: "+String(Blue.range));
+    comPtr->outWd(F("Red      base: "));
+    comPtr->outWd(Red.base);
+    comPtr->outWd(F("  power: "));
+    comPtr->out(Red.power);
+
+    comPtr->outWd(F("Green  base: "));
+    comPtr->outWd(Green.base);
+    comPtr->outWd(F("  power: "));
+    comPtr->out(Green.power);
+
+    comPtr->outWd(F("Blue     base: "));
+    comPtr->outWd(Blue.base);
+    comPtr->outWd(F("  power: "));
+    comPtr->out(Blue.power);
+
+    comPtr->outWd(F("Red      gain: "));
+    comPtr->out(Red.gain);
+
+    comPtr->outWd(F("Green  gain: "));
+    comPtr->out(Green.gain);
+
+    comPtr->outWd(F("Blue     gain: "));
+    comPtr->out(Blue.gain);
+
+    comPtr->outWd(F("Red      lower: "));
+    comPtr->out(Red.lower);
+
+    comPtr->outWd(F("  range: "));
+    comPtr->outWd(Red.range);
+    comPtr->outWd(F("Green  lower: "));
+    comPtr->out(Green.lower);
+
+    comPtr->outWd(F("  range: "));
+    comPtr->outWd(Green.range);
+    comPtr->outWd(F("Blue     lower: "));
+    comPtr->out(Blue.lower);
+
+    comPtr->outWd(F("  range: "));
+    comPtr->out(Blue.range);
     if (STATIC == ctrMode) {
-        comPtr->out("Mode: STATIC");
+        comPtr->outWd(F("Mode: STATIC"));
     } else {
-        comPtr->outWd("FadeMode: ");
-        comPtr->outWd(Light::fadeModes[Light::fMode]);
-        comPtr->out("Delay: "+String(fadeDelay));
+        comPtr->outWd(F("FadeMode: "));
+        comPtr->out(Light::fMode);
+        comPtr->outWd(F("Delay: "));
+        comPtr->out(fadeDelay);
     }
-    comPtr->out("report delay millis= "+String(reportDelay));
+    comPtr->outWd(F("report delay millis= "));
+    comPtr->out((int)reportDelay);
 }
 
 void LightCtr::interrupt(){
@@ -268,17 +295,20 @@ void LightCtr::upperTop() {
 void LightCtr::delayBot(){
     fadeDelay = CONFIG::DELAY_MIN-1;
     checkDelay();
-    comPtr->out("delay= "+String(fadeDelay));
+    comPtr->outWd(F("delay= "));
+    comPtr->out(String(fadeDelay));
 }
 void LightCtr::delayTop() {
     fadeDelay = CONFIG::DELAY_MAX+1;
     checkDelay();
-    comPtr->out("delay= "+String(fadeDelay));
+    comPtr->outWd(F("delay= "));
+    comPtr->out(fadeDelay);
 }
 void LightCtr::delaySet(float inDelay) {
     fadeDelay = (int)inDelay;
     checkDelay();
-    comPtr->out("delay= "+String(fadeDelay));
+    comPtr->outWd(F("delay= "));
+    comPtr->out(fadeDelay);
 }
 
 void LightCtr::allUp(){
@@ -396,7 +426,8 @@ void LightCtr::white_f(){
 void LightCtr::purple_f(){
     fadeDelay /= 4;
     checkDelay();
-    comPtr->out("delay= "+String(fadeDelay));
+    comPtr->outWd(F("delay= "));
+    comPtr->out(fadeDelay);
 }
 void LightCtr::checkDelay(){
     if (fadeDelay > CONFIG::DELAY_MAX) {

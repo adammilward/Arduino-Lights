@@ -11,12 +11,10 @@
 #include "Arduino.h"
 
 Light::fadeMode Light::fMode = Light::SIN;
-const String Light::fadeModes[] =
-    {"linear", "Sinusoidal", "Exponential", "SinExp"};
 
 Light::Light(
-        int inPin,
-        int ID,
+        byte inPin,
+        byte ID,
 		float inGain,
 		float inLower,
 		float inUpper)
@@ -37,7 +35,7 @@ void Light::setCom(SerialCom *inCom) {
 // change change power by a given gain or default
 // int op = -1 or 1
 // float shiftGain < 1
-void Light::shift(int op, float shiftGain) {
+void Light::shift(byte op, float shiftGain) {
     //Serial.print("op");
     //Serial.println(op);
     //Serial.print("shiftGain");
@@ -87,8 +85,10 @@ void Light::set(float setBase, bool flash) {
 		//Serial.println(setBase);
 		analogWrite(pin, (power));
 	}
-	comPtr->out("base= "+String(base));
-	comPtr->out("power= "+String(power));
+	comPtr->outWd(F("base= "));
+    comPtr->out(base);
+	comPtr->outWd(F("power= "));
+    comPtr->out(power);
 }
 
 // change power of light automatically
@@ -188,7 +188,7 @@ void Light::flashOn(){
     delay(20);
     analogWrite(pin, power);
 }
-void Light::changeLower(int op, float change) {
+void Light::changeLower(byte op, float change) {
     /*Serial.println();
     Serial.println();
     Serial.print("lower: ");
@@ -216,13 +216,15 @@ void Light::changeLower(int op, float change) {
     base = 0;
     flashOff();
 
-    comPtr->out("upper= "+String(tempUpper));
-    comPtr->out("lower= "+String(tempLower));
+    comPtr->outWd(F("upper= "));
+    comPtr->out(tempUpper);
+    comPtr->outWd(F("lower= "));
+    comPtr->out(tempLower);
 }
 /**
  * range from 0.2 to 1 increments of 0.2
  */
-void Light::changeUpper(int op, float change) {
+void Light::changeUpper(byte op, float change) {
    /* Serial.println();
     Serial.println();
     Serial.print("lower: ");
@@ -251,8 +253,10 @@ void Light::changeUpper(int op, float change) {
     base = 1;
     flashOff();
 
-    comPtr->out("upper= "+String(tempUpper));
-    comPtr->out("lower= "+String(tempLower));
+    comPtr->outWd(F("upper= "));
+    comPtr->out((tempUpper));
+    comPtr->outWd(F("lower= "));
+    comPtr->out((tempLower));
 }
 
 

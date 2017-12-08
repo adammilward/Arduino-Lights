@@ -16,7 +16,7 @@ VoltMeter::VoltMeter() {
 
 }
 
-String VoltMeter::getVoltage(int pinNumber) {
-    return String(allPinsPtr[pinNumber]->read());
+float VoltMeter::getVoltage(int pinNumber) {
+    return allPinsPtr[pinNumber]->read();
 }
 

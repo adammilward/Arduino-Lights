@@ -19,14 +19,22 @@ public:
     enum Mode {NORMAL, VERBOSE};
     Mode mode = NORMAL;
 
-    String name = "initialised";
-
     static SoftwareSerial BT;
 
     bool isNum(String*);
+    bool actionSerial(String*, int);
+
+
+    void out(unsigned int);
+    void outWd(unsigned int);
+    void out(int);
+    void outWd(int);
+    void out(float);
+    void outWd(float);
+    void out(byte);
+    void outWd(byte);
     void out(String);
     void outWd(String);
-    bool actionSerial(String*, int);
 
 private:
 

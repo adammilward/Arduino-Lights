@@ -14,7 +14,7 @@ AnaloguePin::AnaloguePin() {
     factor = 0;
 }
 
-void AnaloguePin::set(int inPin, float conversionFactor) {
+void AnaloguePin::set(byte inPin, float conversionFactor) {
     pinNo = inPin;
     factor = conversionFactor;
 }

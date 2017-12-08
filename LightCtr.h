@@ -29,7 +29,7 @@ public:
     enum controllerMode { STATIC, FADE };
     controllerMode ctrMode = controllerMode::STATIC;
 
-    int fadeDelay = CONFIG::DELAY_MIN*2;
+    unsigned int fadeDelay = CONFIG::DELAY_MIN*2;
     unsigned long waitMillisLights = 0; // for timeing the next event.
 
     unsigned int reportDelay = 0;

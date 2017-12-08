@@ -24,7 +24,7 @@ public:
     AnaloguePin aPin4;
     AnaloguePin* allPinsPtr[5] = {&aPin0, &aPin1, &aPin2, &aPin3, &aPin4};
 
-    String getVoltage(int pinNumber);
+    float getVoltage(int pinNumber);
 };
 
 #endif /* VOLTMETER_H_ */

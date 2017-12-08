@@ -13,10 +13,10 @@
 class AnaloguePin {
 public:
     AnaloguePin();
-    int pinNo;
+    byte pinNo;
     float factor;
     float read();
-    void set(int, float);
+    void set(byte, float);
     // sets the conversion factor an pin number
 
 private:

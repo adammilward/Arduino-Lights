@@ -151,7 +151,7 @@ private:
     };
     PTR actions[2][20] = {
         {   // first array for static mode
-&LightCtr::allUp,    &LightCtr::allUp,   &LightCtr::on,   &LightCtr::off   ,
+&LightCtr::allUp,    &LightCtr::allDown,   &LightCtr::on,   &LightCtr::off   ,
 &LightCtr::redUp,   &LightCtr::greenUp,  &LightCtr::blueUp, &LightCtr::blueUp ,
 &LightCtr::redDown,&LightCtr::greenDown, &LightCtr::blueDown, &LightCtr::blueDown,
 &LightCtr::store1, &LightCtr::store2,  &LightCtr::store3,&LightCtr::store4 ,

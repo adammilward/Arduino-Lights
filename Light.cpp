@@ -35,11 +35,13 @@ void Light::setCom(SerialCom *inCom) {
 // change change power by a given gain or default
 // int op = -1 or 1
 // float shiftGain < 1
-void Light::shift(byte op, float shiftGain) {
-    //Serial.print("op");
-    //Serial.println(op);
-    //Serial.print("shiftGain");
-    //Serial.println(shiftGain);
+void Light::shift(char op, float shiftGain) {
+#ifdef MYBUG
+    Serial.print(F("op"));
+    Serial.println(op);
+    Serial.print(F("shiftGain"));
+    Serial.println(shiftGain);
+#endif
 	float setBase = base + op * shiftGain;
 	set(setBase, true);
 }
@@ -188,7 +190,7 @@ void Light::flashOn(){
     delay(20);
     analogWrite(pin, power);
 }
-void Light::changeLower(byte op, float change) {
+void Light::changeLower(char op, float change) {
     /*Serial.println();
     Serial.println();
     Serial.print("lower: ");
@@ -224,7 +226,7 @@ void Light::changeLower(byte op, float change) {
 /**
  * range from 0.2 to 1 increments of 0.2
  */
-void Light::changeUpper(byte op, float change) {
+void Light::changeUpper(char op, float change) {
    /* Serial.println();
     Serial.println();
     Serial.print("lower: ");

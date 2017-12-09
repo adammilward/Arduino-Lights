@@ -35,7 +35,14 @@ void Controller::timer(unsigned long millis) {
             (signed long)(millis - statusCtr.waitMillisReport) >= 0
     )
     {
-        statusCtr.report();
+        switch (statusCtr.reportType) {
+        case 0 :
+            statusCtr.report();
+            break;
+        case 1 :
+            statusCtr.csv();
+            break;
+        }
         statusCtr.waitMillisReport = millis + statusCtr.reportDelay;
     }
 }

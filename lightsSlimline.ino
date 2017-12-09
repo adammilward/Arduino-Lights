@@ -1,3 +1,4 @@
+//#define MYBUG 0
 
 #include "Arduino.h"
 #include "IRremote.h"
@@ -32,7 +33,10 @@ void setup() {
     masterCtr.lightCtr.Red.set(-1);
     masterCtr.lightCtr.Green.set(-1);
     masterCtr.lightCtr.Blue.set(-1);
-    com.out(F("ready to recieve"));
+#ifdef MYBUG
+    com.out(F("** MYBUG mode enabled **"));
+#endif
+    com.out(F("we are progammed to recieve"));
 }
 
 // Interrupt is called once a millisecond,

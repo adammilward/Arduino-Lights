@@ -19,23 +19,23 @@ public:
     static const byte DELAY_MIN = 1;
     static const unsigned int DELAY_MAX = 256;
     /* Uno */                        //   ________
-    static const byte RED_PIN = 9;    //  |   __   |
-    static const byte GREEN_PIN = 10;  //  |  /  \  |
-    static const byte BLUE_PIN = 11;   //  | |    | |
-    static const byte IREC_PIN = 2;  //  out  0  v+
+    static const byte RED_PIN = 4;    //  |   __   |
+    static const byte GREEN_PIN = 3;  //  |  /  \  |
+    static const byte BLUE_PIN = 2;   //  | |    | |
+    static const byte IREC_PIN = 5;  //  out  0  v+
 
-    /* Mega
-    static const int RED_PIN = 10;
-    static const int GREEN_PIN = 9;
-    static const int BLUE_PIN = 6;
-    static const int IREC_PIN = 12;
-     */
 
-    static constexpr float A0_FACTOR = 0.02583;
+    static constexpr float A0_FACTOR = 0.026801096;
+    static constexpr float A1_FACTOR = 0.015279018;
+    static constexpr float A2_FACTOR = 0.015157219;
+    static constexpr float A3_FACTOR = 0.01523142;
+    static constexpr float A4_FACTOR = 0.015150509;
+
+/*    static constexpr float A0_FACTOR = 0.02583;
     static constexpr float A1_FACTOR = 0.01473;
     static constexpr float A2_FACTOR = 0.01461;
     static constexpr float A3_FACTOR = 0.01467;
-    static constexpr float A4_FACTOR = 0.01460;
+    static constexpr float A4_FACTOR = 0.01460;*/
 
 };
 #endif /* CONFIG_H_ */

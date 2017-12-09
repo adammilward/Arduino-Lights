@@ -121,6 +121,7 @@ bool LightCtr::actionRemote(unsigned long inValue){
     for (int i = 0; i < 20; i++) {
         if (codes[i] == inValue) {
             (this->*actions[ctrMode][i])();
+            comPtr->out(i);
             return true;
         }
     }
@@ -159,20 +160,20 @@ void LightCtr::report() {
     comPtr->out(Blue.gain);
 
     comPtr->outWd(F("Red      lower: "));
-    comPtr->out(Red.lower);
-
+    comPtr->outWd(Red.lower);
     comPtr->outWd(F("  range: "));
-    comPtr->outWd(Red.range);
+    comPtr->out(Red.range);
+
     comPtr->outWd(F("Green  lower: "));
-    comPtr->out(Green.lower);
-
+    comPtr->outWd(Green.lower);
     comPtr->outWd(F("  range: "));
-    comPtr->outWd(Green.range);
-    comPtr->outWd(F("Blue     lower: "));
-    comPtr->out(Blue.lower);
+    comPtr->out(Green.range);
 
+    comPtr->outWd(F("Blue     lower: "));
+    comPtr->outWd(Blue.lower);
     comPtr->outWd(F("  range: "));
     comPtr->out(Blue.range);
+
     if (STATIC == ctrMode) {
         comPtr->outWd(F("Mode: STATIC"));
     } else {
@@ -295,20 +296,14 @@ void LightCtr::upperTop() {
 void LightCtr::delayBot(){
     fadeDelay = CONFIG::DELAY_MIN-1;
     checkDelay();
-    comPtr->outWd(F("delay= "));
-    comPtr->out(String(fadeDelay));
 }
 void LightCtr::delayTop() {
     fadeDelay = CONFIG::DELAY_MAX+1;
     checkDelay();
-    comPtr->outWd(F("delay= "));
-    comPtr->out(fadeDelay);
 }
 void LightCtr::delaySet(float inDelay) {
     fadeDelay = (int)inDelay;
     checkDelay();
-    comPtr->outWd(F("delay= "));
-    comPtr->out(fadeDelay);
 }
 
 void LightCtr::allUp(){
@@ -426,8 +421,6 @@ void LightCtr::white_f(){
 void LightCtr::purple_f(){
     fadeDelay /= 4;
     checkDelay();
-    comPtr->outWd(F("delay= "));
-    comPtr->out(fadeDelay);
 }
 void LightCtr::checkDelay(){
     if (fadeDelay > CONFIG::DELAY_MAX) {
@@ -441,9 +434,11 @@ void LightCtr::checkDelay(){
         Green.flashHalf();
         Blue.flashHalf();
     }
-        Red.flashOff();
-        Green.flashOff();
-        Blue.flashOff();
-        Serial.println(fadeDelay);
+    Red.flashOff();
+    Green.flashOff();
+    Blue.flashOff();
+    Serial.println(fadeDelay);
+    comPtr->outWd(F("delay= "));
+    comPtr->out(fadeDelay);
 }
 void LightCtr::null(){};

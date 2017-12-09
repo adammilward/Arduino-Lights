@@ -17,15 +17,21 @@ void StatusCtr::setCom(SerialCom* inComRef) {
 bool StatusCtr::actionSerial(String* firstWordPtr , int arrayLength) {
     if (*(firstWordPtr) == "report") {
         if (arrayLength == 2 && comPtr->isNum(firstWordPtr+1)) {
-            float value = (firstWordPtr+1)->toFloat();
-            setReportDelay(value);
-        } else {
-            report();
+            setReportDelay((firstWordPtr+1)->toFloat());
+            reportType = REPORT;
         }
+        report();
+    } else if (*(firstWordPtr) == "csv") {
+        if (arrayLength == 2 && comPtr->isNum(firstWordPtr+1)) {
+            setReportDelay((firstWordPtr+1)->toFloat());
+            reportType = CSV;
+        }
+        csv();
     } else {
         comPtr->out(F("Status Controller commands are:"));
         comPtr->out(F("report [nn]"));
-        comPtr->out(F("where repeat delay in s"));
+        comPtr->out(F("csv [nn]"));
+        comPtr->out(F("where nn is repeat delay in s"));
         return false;
     }
     return true;
@@ -34,7 +40,6 @@ bool StatusCtr::actionSerial(String* firstWordPtr , int arrayLength) {
 void StatusCtr::setReportDelay(float delaySeconds) {
     reportDelay = (unsigned int)(delaySeconds * 1000);
     waitMillisReport = millis() + reportDelay;
-    report();
 }
 
 void StatusCtr::report() {
@@ -57,4 +62,16 @@ void StatusCtr::report() {
     comPtr->out(F("V"));
     comPtr->outWd(F("delay= "));
     comPtr->out((float)reportDelay/1000);
+}
+
+void StatusCtr::csv() {
+    comPtr->outWd(voltMeter.getVoltage(0));
+    comPtr->outWd(F(", "));
+    comPtr->outWd(voltMeter.getVoltage(1));
+    comPtr->outWd(F(", "));
+    comPtr->outWd(voltMeter.getVoltage(2));
+    comPtr->outWd(F(", "));
+    comPtr->outWd(voltMeter.getVoltage(3));
+    comPtr->outWd(F(", "));
+    comPtr->out(voltMeter.getVoltage(4));
 }

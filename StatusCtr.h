@@ -16,18 +16,23 @@ public:
 
     SerialCom* comPtr;
 
+    enum ReportType {REPORT, CSV};
+    ReportType reportType = REPORT;
+
     unsigned int reportDelay = 0;
     unsigned long waitMillisReport = 0;
 
     void setCom(SerialCom*);
     bool actionSerial(String*, int);
     void report();
+    void csv();
 
 
 private:
     VoltMeter voltMeter;
 
     void processData(String);
+    void secondWord(String*);
     void setReportDelay(float);
 };
 #endif /* STATUSCTR_H_ */

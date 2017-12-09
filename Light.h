@@ -34,12 +34,12 @@ public:
     float lower;        // lower limit 1 to 255
     float range;        // range/multiplier 0 to
 
-	void shift(byte op, float shiftGain = DEF_GAIN);
+	void shift(char op, float shiftGain = DEF_GAIN);
 	void set(float setBase, bool flash = false);
 	void slide();
 	void toHalf();
-	void changeLower(byte op, float change = 0.2);
-	void changeUpper(byte op, float change = 0.2);
+	void changeLower(char op, float change = 0.2);
+	void changeUpper(char op, float change = 0.2);
 	void flashOff();
 	void flashHalf();
 	void flashOn();

@@ -27,10 +27,13 @@ bool StatusCtr::actionSerial(String* firstWordPtr , int arrayLength) {
             reportType = CSV;
         }
         csv();
+    } else if (*(firstWordPtr) == "config") {
+        voltMeter.toggleConfigMode();
     } else {
         comPtr->out(F("Status Controller commands are:"));
         comPtr->out(F("report [nn]"));
-        comPtr->out(F("csv [nn]"));
+        comPtr->out(F("report [nn]"));
+        comPtr->out(F("config"));
         comPtr->out(F("where nn is repeat delay in s"));
         return false;
     }
@@ -38,7 +41,7 @@ bool StatusCtr::actionSerial(String* firstWordPtr , int arrayLength) {
 }
 
 void StatusCtr::setReportDelay(float delaySeconds) {
-    reportDelay = (unsigned int)(delaySeconds * 1000);
+    reportDelay = (unsigned long)(delaySeconds * 1000);
     waitMillisReport = millis() + reportDelay;
 }
 
@@ -65,6 +68,7 @@ void StatusCtr::report() {
 }
 
 void StatusCtr::csv() {
+    comPtr->outWd(F(", "));
     comPtr->outWd(voltMeter.getVoltage(0));
     comPtr->outWd(F(", "));
     comPtr->outWd(voltMeter.getVoltage(1));

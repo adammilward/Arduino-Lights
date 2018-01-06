@@ -19,7 +19,7 @@ public:
     enum ReportType {REPORT, CSV};
     ReportType reportType = REPORT;
 
-    unsigned int reportDelay = 0;
+    unsigned long reportDelay = 0;
     unsigned long waitMillisReport = 0;
 
     void setCom(SerialCom*);

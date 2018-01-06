@@ -17,21 +17,24 @@ Controller::Controller(SerialCom *inComRef) {
 void Controller::timer(unsigned long millis) {
     // the time should call a timer function in each of the sub controllers
     // these then decide what to do, as it is out of scope for master controller
-    if (lightCtr.ctrMode != LightCtr::STATIC &&
+    if (lightCtr.ctrMode != LightCtr::STATIC
+            &&
             (signed long)(millis - lightCtr.waitMillisLights) >= 0
     )
     {
         lightCtr.waitMillisLights = millis + lightCtr.fadeDelay;
         lightCtr.interrupt();
     }
-    else if ( lightCtr.reportDelay > 0 &&
+    else if (lightCtr.reportDelay > 0
+            &&
             (signed long)(millis - lightCtr.waitMillisReport) >= 0
     )
     {
         lightCtr.report();
         lightCtr.waitMillisReport = millis + lightCtr.reportDelay;
     }
-    else if ( statusCtr.reportDelay > 0 &&
+    else if (statusCtr.reportDelay > 0
+            &&
             (signed long)(millis - statusCtr.waitMillisReport) >= 0
     )
     {
@@ -73,7 +76,7 @@ void Controller::serialReceive(String data) {
         commandLength++; // record number of words found
     }
 
-
+    // if the first word is a mode, then set mode, and advance word index
     if (checkForMode(&newCommand[0], 1)) {
         firstWordIndex++; //set ignore first word
         commandLength--;
@@ -93,7 +96,6 @@ bool Controller::checkForRepeat(String data)  {
 }
 
 bool Controller::checkForMode(String* wordPtr, int length)  {
-
     if (*wordPtr == "lights") {
         mode = LIGHTS;
         comPtr->out(F("Lights Mode engaged"));
@@ -127,6 +129,7 @@ bool Controller::processSerial(String* firstWordPtr, int commandLength) {
         copy(firstWordPtr, &lastCommand[0], commandLength);
     } else {
         comPtr->out(F("I'm sorry Dave, I'm affraid I can't do that."));
+        comPtr->out(F("Modes are: 'lights', 'status' or 'com'"));
     }
     return actioned;
 }

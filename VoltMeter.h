@@ -6,7 +6,6 @@
  */
 
 #include "Arduino.h"
-#include "AnaloguePin.h"
 #include "Config.h"
 #include "SerialCom.h"
 
@@ -17,13 +16,18 @@ class VoltMeter {
 public:
     VoltMeter();
 
-    AnaloguePin aPin0;
-    AnaloguePin aPin1;
-    AnaloguePin aPin2;
-    AnaloguePin aPin3;
-    AnaloguePin aPin4;
-    AnaloguePin* allPinsPtr[5] = {&aPin0, &aPin1, &aPin2, &aPin3, &aPin4};
+    enum ConfigMode {OFF = 0, ON = 1};
+    ConfigMode configMode = OFF;
 
+    float convFactor[5] = {
+        CONFIG::A0_FACTOR,
+        CONFIG::A1_FACTOR,
+        CONFIG::A2_FACTOR,
+        CONFIG::A3_FACTOR,
+        CONFIG::A4_FACTOR
+    };
+
+    void toggleConfigMode();
     float getVoltage(int pinNumber);
 };
 

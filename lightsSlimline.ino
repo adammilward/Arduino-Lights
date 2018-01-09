@@ -1,11 +1,10 @@
 //#define MYBUG 0
+//#define DEBUG 0
 
 #include "Arduino.h"
 #include "IRremote.h"
 #include "Controller.h"
 #include "SerialCom.h"
-
-
 #include "Config.h"
 
 IRrecv irrecv(CONFIG::IREC_PIN);      // from the ir decode library
@@ -24,9 +23,12 @@ void setup() {
     Serial.begin(9600);
     Serial3.begin(9600);
     //SerialCom::BT.begin(9600);
+#ifdef MYBUG
     Serial.print(F("serial ready to recieve"));
     Serial.print(F("serial3 ready to recieve"));
     //SerialCom::BT.println("software serial ready to recieve");
+    com.out(F("** MYBUG mode enabled **"));
+#endif
 
     //Timer0 is already used for millis() - we'll just interrupt somewhere
     //in the middle and call the "Compare A" function below
@@ -37,10 +39,9 @@ void setup() {
     masterCtr.lightCtr.Red.set(-1);
     masterCtr.lightCtr.Green.set(-1);
     masterCtr.lightCtr.Blue.set(-1);
-#ifdef MYBUG
-    com.out(F("** MYBUG mode enabled **"));
-#endif
+
     com.out(F("we are progammed to recieve"));
+    Serial.print (F("Free memory = "));
 }
 
 // Interrupt is called once a millisecond,

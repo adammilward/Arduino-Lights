@@ -6,7 +6,6 @@
  */
 
 #include "Arduino.h"
-#include "SoftwareSerial.h"
 #include "Config.h"
 
 #ifndef SERIALCOM_H_
@@ -19,7 +18,7 @@ public:
     enum Mode {NORMAL, VERBOSE};
     Mode mode = NORMAL;
 
-    static SoftwareSerial BT;
+    //static SoftwareSerial BT;
 
     bool isNum(String*);
     bool actionSerial(String*, int);

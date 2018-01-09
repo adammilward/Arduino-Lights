@@ -5,9 +5,7 @@
  *      Author: Adam Milward
  */
 
-#include "Arduino.h"
 #include "Config.h"
-#include "SerialCom.h"
 
 #ifndef VOLTMETER_H_
 #define VOLTMETER_H_

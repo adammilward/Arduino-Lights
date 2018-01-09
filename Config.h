@@ -25,11 +25,11 @@ public:
     static const byte IREC_PIN = 5;  //  out  0  v+
 
 
-    static constexpr float A0_FACTOR = 0.026801096;
-    static constexpr float A1_FACTOR = 0.015279018;
-    static constexpr float A2_FACTOR = 0.015157219;
-    static constexpr float A3_FACTOR = 0.01523142;
-    static constexpr float A4_FACTOR = 0.015150509;
+    static constexpr float A0_FACTOR = 0.027305029;
+    static constexpr float A1_FACTOR = 0.015564788;
+    static constexpr float A2_FACTOR = 0.015415081;
+    static constexpr float A3_FACTOR = 0.015522867;
+    static constexpr float A4_FACTOR = 0.01540874;
 
 /*    static constexpr float A0_FACTOR = 0.02583;
     static constexpr float A1_FACTOR = 0.01473;

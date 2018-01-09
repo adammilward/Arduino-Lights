@@ -4,11 +4,8 @@
  *  Created on: 20 Feb 2017
  *      Author: Adam Milward
  */
-#include "Arduino.h"
+
 #include "LightCtr.h"
-#include "SoftwareSerial.h"
-#include "Config.h"
-#include "SerialCom.h"
 #include "StatusCtr.h"
 
 #ifndef REMOTERECEIVE_H_
@@ -21,7 +18,6 @@ public:
     const unsigned long int IR_HOLD = 0xFFFFFFFF;
     LightCtr lightCtr;
     StatusCtr statusCtr;
-    static SoftwareSerial BTs;
     void irReceive(unsigned long value);
     void serialReceive(String data);
     void timer(unsigned long);

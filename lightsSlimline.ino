@@ -3,8 +3,10 @@
 #include "Arduino.h"
 #include "IRremote.h"
 #include "Controller.h"
-#include "SoftwareSerial.h"
 #include "SerialCom.h"
+
+
+#include "Config.h"
 
 IRrecv irrecv(CONFIG::IREC_PIN);      // from the ir decode library
 decode_results Results; // from the ir decode library
@@ -20,9 +22,11 @@ void setup() {
     irrecv.enableIRIn(); // Start the receiver
     // initialize serial communication at 9600 bits per second:
     Serial.begin(9600);
-    com.out(F("ready to recieve"));
-    SerialCom::BT.begin(9600);
-    SerialCom::BT.println("ready to recieve");
+    Serial3.begin(9600);
+    //SerialCom::BT.begin(9600);
+    Serial.print(F("serial ready to recieve"));
+    Serial.print(F("serial3 ready to recieve"));
+    //SerialCom::BT.println("software serial ready to recieve");
 
     //Timer0 is already used for millis() - we'll just interrupt somewhere
     //in the middle and call the "Compare A" function below
@@ -40,8 +44,8 @@ void setup() {
 }
 
 // Interrupt is called once a millisecond,
-SIGNAL(TIMER0_COMPA_vect) {
 /*    if (RemoteCtr.LightRemote.ctrMode != LightCtr::STATIC) {
+SIGNAL(TIMER0_COMPA_vect) {
         if ((long) (millis() - waitMillisLights) >= 0) {
             // set the time for next interupt
             waitMillisLights += RemoteCtr.LightRemote.delay;
@@ -49,7 +53,7 @@ SIGNAL(TIMER0_COMPA_vect) {
         }
     }*/
 
-}
+//}
 
 // The loop function is called in an endless loop
 void loop() {
@@ -66,11 +70,17 @@ void loop() {
     // run Serial commands
     while (Serial.available()) {
         String command = Serial.readStringUntil('\n');
+        Serial.print(command);
         masterCtr.serialReceive(command);
     }
-    while (com.BT.available()) {
-        String command = com.BT.readStringUntil('\r');
+    while (Serial3.available()) {
+        String command = Serial3.readStringUntil('\n');
+        Serial.print(command);
         masterCtr.serialReceive(command);
     }
+    /*while (com.BT.available()) {
+        String command = com.BT.readStringUntil('\n');
+        masterCtr.serialReceive(command);
+    }*/
 }
 

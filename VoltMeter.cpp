@@ -14,6 +14,8 @@ void VoltMeter::toggleConfigMode() {
 }
 
 float VoltMeter::getVoltage(int pinNumber) {
-    return analogRead(pinNumber)*convFactor[pinNumber]*configMode;
+    return (configMode) ?
+            analogRead(pinNumber):
+            analogRead(pinNumber)*convFactor[pinNumber] ;
 }
 

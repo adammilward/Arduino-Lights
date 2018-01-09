@@ -7,7 +7,6 @@
  */
 
 #include "Config.h"
-#include "SoftwareSerial.h"
 #include "SerialCom.h"
 
 #ifndef Light_h_

@@ -7,7 +7,7 @@
 
 #include "SerialCom.h"
 
-SoftwareSerial SerialCom::BT(CONFIG::BT_RX, CONFIG::BT_TX); // RX | TX
+//SoftwareSerial SerialCom::BT(CONFIG::BT_RX, CONFIG::BT_TX); // RX | TX
 
 SerialCom::SerialCom() {
     // TODO Auto-generated constructor stub
@@ -49,41 +49,51 @@ bool SerialCom::isNum(String* word) {
 
 void SerialCom::out(byte output) {
     Serial.println(output);
-    BT.println(output);
+    Serial3.println(output);
+    //BT.println(output);
 }
 void SerialCom::outWd(byte output) {
     Serial.print(output);
-    BT.print(output);
+    Serial3.print(output);
+    //BT.print(output);
 }
 void SerialCom::out(unsigned int output) {
     Serial.println(output);
-    BT.println(output);
+    Serial3.println(output);
+    //BT.println(output);
 }
 void SerialCom::outWd(unsigned int output) {
     Serial.print(output);
-    BT.print(output);
+    Serial3.print(output);
+    //BT.print(output);
 }
 void SerialCom::out(int output) {
     Serial.println(output);
-    BT.println(output);
+    Serial3.println(output);
+    //BT.println(output);
 }
 void SerialCom::outWd(int output) {
     Serial.print(output);
-    BT.print(output);
+    Serial3.print(output);
+    //BT.print(output);
 }
 void SerialCom::out(float output) {
     Serial.println(output);
-    BT.println(output);
+    Serial3.println(output);
+    //BT.println(output);
 }
 void SerialCom::outWd(float output) {
     Serial.print(output);
-    BT.print(output);
+    Serial3.print(output);
+    //BT.print(output);
 }
 void SerialCom::out(String output) {
     Serial.println(output);
-    BT.println(output);
+    Serial3.println(output);
+    //BT.println(output);
 }
 void SerialCom::outWd(String output) {
     Serial.print(output);
-    BT.print(output);
+    Serial3.print(output);
+    //BT.print(output);
 }

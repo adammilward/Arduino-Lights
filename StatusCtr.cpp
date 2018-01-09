@@ -27,13 +27,13 @@ bool StatusCtr::actionSerial(String* firstWordPtr , int arrayLength) {
             reportType = CSV;
         }
         csv();
-    } else if (*(firstWordPtr) == "config") {
+    } else if (*(firstWordPtr) == "calibrate") {
         voltMeter.toggleConfigMode();
     } else {
         comPtr->out(F("Status Controller commands are:"));
         comPtr->out(F("report [nn]"));
         comPtr->out(F("report [nn]"));
-        comPtr->out(F("config"));
+        comPtr->out(F("calibrate"));
         comPtr->out(F("where nn is repeat delay in s"));
         return false;
     }
@@ -48,16 +48,18 @@ void StatusCtr::setReportDelay(float delaySeconds) {
 void StatusCtr::report() {
     comPtr->out(F(""));
     comPtr->out(F("    ****    "));
-    comPtr->outWd(F("SolarPanels: "));
+    comPtr->outWd(F("Solar "
+            ""
+            "Panels: "));
     comPtr->outWd(voltMeter.getVoltage(0));
     comPtr->out(F("V"));
-    comPtr->outWd(F("ConsumerUnit: "));
+    comPtr->outWd(F("Consumer Unit: "));
     comPtr->outWd(voltMeter.getVoltage(1));
     comPtr->out(F("V"));
-    comPtr->outWd(F("LeisueBattery: "));
+    comPtr->outWd(F("Leisue Battery: "));
     comPtr->outWd(voltMeter.getVoltage(2));
     comPtr->out(F("V"));
-    comPtr->outWd(F("BanBattery: "));
+    comPtr->outWd(F("Van Battery: "));
     comPtr->outWd(voltMeter.getVoltage(3));
     comPtr->out(F("V"));
     comPtr->outWd("spare: ");

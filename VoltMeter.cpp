@@ -22,3 +22,15 @@ float VoltMeter::getVoltage(int pinNumber) {
             analogRead(pinNumber)*convFactor[pinNumber] ;
 }
 
+void VoltMeter::setPin(int pin, float newValue) {
+    float analogValue = 0;
+    analogRead(pin);
+    delay(10);
+    int i = 3;
+    while (i--) {
+        analogValue += analogRead(pin);
+        delay(10);
+    }
+    analogValue /= 3;
+    convFactor[pin] = newValue/analogValue;
+}

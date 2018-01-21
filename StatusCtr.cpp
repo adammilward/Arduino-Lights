@@ -14,21 +14,23 @@ void StatusCtr::setCom(SerialCom* inComRef) {
     comPtr = inComRef;
 }
 
-bool StatusCtr::actionSerial(String* firstWordPtr , int arrayLength) {
+bool StatusCtr::actionSerial(String* firstWordPtr , int commandLength) {
     if (*(firstWordPtr) == "report") {
-        if (arrayLength == 2 && comPtr->isNum(firstWordPtr+1)) {
+        if (commandLength == 2 && comPtr->isNum(firstWordPtr+1)) {
             setReportDelay((firstWordPtr+1)->toFloat());
             reportType = REPORT;
         }
         report();
     } else if (*(firstWordPtr) == "csv") {
-        if (arrayLength == 2 && comPtr->isNum(firstWordPtr+1)) {
+        if (commandLength == 2 && comPtr->isNum(firstWordPtr+1)) {
             setReportDelay((firstWordPtr+1)->toFloat());
             reportType = CSV;
         }
         csv();
     } else if (*(firstWordPtr) == "calibrate") {
         voltMeter.toggleConfigMode();
+    } else if (*(firstWordPtr) == "set") {
+        set((firstWordPtr+1), --commandLength);
     } else {
         comPtr->out(F("Status Controller commands are:"));
         comPtr->out(F("report [nn]"));
@@ -38,6 +40,35 @@ bool StatusCtr::actionSerial(String* firstWordPtr , int arrayLength) {
         return false;
     }
     return true;
+}
+
+bool StatusCtr::set(String* firstWordPtr, int commandLength) {
+    if (commandLength == 2) {
+        if (*(firstWordPtr) == "all" && comPtr->isNum(firstWordPtr+1)) {
+            setAll((firstWordPtr+1)->toFloat());
+            comPtr->out(F("value set"));
+            return true;
+        } else if (comPtr->isNum(firstWordPtr)
+                && comPtr->isNum(firstWordPtr+1))
+        {
+            voltMeter.setPin(
+                firstWordPtr->toInt(),
+                (firstWordPtr+1)->toFloat()
+            );
+            comPtr->out(F("value set"));
+            return true;
+        }
+    }
+    comPtr->out(F("Set Failed, command format is: "));
+    comPtr->out(F("Set All (nn.nn)"));
+    comPtr->out(F("Set (pinNumber) (nn.nn)"));
+    return false;
+}
+
+void StatusCtr::setAll(float newValue) {
+    for (int pin = 0; pin < 5; pin++) {
+        voltMeter.setPin(pin, newValue);
+    }
 }
 
 void StatusCtr::setReportDelay(float delaySeconds) {

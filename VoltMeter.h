@@ -27,6 +27,8 @@ public:
 
     void toggleConfigMode();
     float getVoltage(int pinNumber);
+    void setPin(int, float);
 };
+
 
 #endif /* VOLTMETER_H_ */

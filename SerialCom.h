@@ -23,7 +23,6 @@ public:
     bool isNum(String*);
     bool actionSerial(String*, int);
 
-
     void out(unsigned int);
     void outWd(unsigned int);
     void out(int);

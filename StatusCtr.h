@@ -34,5 +34,8 @@ private:
     void processData(String);
     void secondWord(String*);
     void setReportDelay(float);
+
+    bool set(String*, int);
+    void setAll(float);
 };
 #endif /* STATUSCTR_H_ */

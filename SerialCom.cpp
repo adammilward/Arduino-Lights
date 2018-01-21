@@ -15,18 +15,18 @@ SerialCom::SerialCom() {
 }
 
 
-bool SerialCom::actionSerial(String* firstWordPtr , int commandLength) {
+bool SerialCom::actionSerial(String* firstWordPtr, int commandLength) {
     if (*(firstWordPtr) == "normal") {
         mode = NORMAL;
-        out("com mode set to 'normal'");
+        out(F("com mode set to 'normal'"));
     } else if (*(firstWordPtr) == "debug") {
         mode = VERBOSE;
-        out("com mode set to 'debug'");
+        out(F("com mode set to 'debug'"));
     } else if (*(firstWordPtr) == "report") {
-        out("not a lot to say really");
+        out(F("not a lot to say really"));
     } else {
-        out("Command not recognised, options are:");
-        out("'normal' and 'debug'");
+        out(F("Command not recognised, options are:"));
+        out(F("'normal' and 'debug'"));
         return false;
     }
     return true;
@@ -37,10 +37,11 @@ bool SerialCom::isNum(String* word) {
     for(byte i = 0 ; i < word->length() ; i++)
     {
         isNum = (
-                isDigit(word->charAt(i)) ||
-                word->charAt(i) == '+' ||
-                word->charAt(i) == '.' ||
-                word->charAt(i) == '-');
+            isDigit(word->charAt(i)) ||
+            word->charAt(i) == '+' ||
+            word->charAt(i) == '.' ||
+            word->charAt(i) == '-'
+        );
         if(!isNum) return false;
     }
     return isNum;

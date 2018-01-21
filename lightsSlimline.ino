@@ -1,4 +1,4 @@
-//#define MYBUG 0
+#define MYBUG 1
 //#define DEBUG 0
 //#define LIGHTS 0
 //#define MEGA 0

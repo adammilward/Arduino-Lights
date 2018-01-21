@@ -40,7 +40,7 @@ public:
     void interrupt();
     byte holdCount = 0;          // count how long button pressed
     void report();
-
+    void timer(unsigned long);
 private:
 
     enum colour { RED, GREEN, BLUE, WHITE };

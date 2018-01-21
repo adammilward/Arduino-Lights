@@ -49,51 +49,71 @@ bool SerialCom::isNum(String* word) {
 
 void SerialCom::out(byte output) {
     Serial.println(output);
+#ifdef MEGA
     Serial3.println(output);
+#endif
     //BT.println(output);
 }
 void SerialCom::outWd(byte output) {
     Serial.print(output);
-    Serial3.print(output);
+#ifdef MEGA
+    Serial3.println(output);
+#endif
     //BT.print(output);
 }
 void SerialCom::out(unsigned int output) {
     Serial.println(output);
+#ifdef UNO
     Serial3.println(output);
+#endif
     //BT.println(output);
 }
 void SerialCom::outWd(unsigned int output) {
     Serial.print(output);
-    Serial3.print(output);
+#ifdef MEGA
+    Serial3.println(output);
+#endif
     //BT.print(output);
 }
 void SerialCom::out(int output) {
     Serial.println(output);
+#ifdef MEGA
     Serial3.println(output);
+#endif
     //BT.println(output);
 }
 void SerialCom::outWd(int output) {
     Serial.print(output);
-    Serial3.print(output);
+#ifdef MEGA
+    Serial3.println(output);
+#endif
     //BT.print(output);
 }
 void SerialCom::out(float output) {
     Serial.println(output);
+#ifdef MEGA
     Serial3.println(output);
+#endif
     //BT.println(output);
 }
 void SerialCom::outWd(float output) {
     Serial.print(output);
-    Serial3.print(output);
+#ifdef MEGA
+    Serial3.println(output);
+#endif
     //BT.print(output);
 }
 void SerialCom::out(String output) {
     Serial.println(output);
+#ifdef MEGA
     Serial3.println(output);
+#endif
     //BT.println(output);
 }
 void SerialCom::outWd(String output) {
     Serial.print(output);
-    Serial3.print(output);
+#ifdef MEGA
+    Serial3.println(output);
+#endif
     //BT.print(output);
 }

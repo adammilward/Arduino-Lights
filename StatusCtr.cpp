@@ -45,6 +45,24 @@ void StatusCtr::setReportDelay(float delaySeconds) {
     waitMillisReport = millis() + reportDelay;
 }
 
+void StatusCtr::timer(unsigned long millis) {
+    if (reportDelay > 0
+                &&
+                (signed long)(millis - waitMillisReport) >= 0
+        )
+        {
+            switch (reportType) {
+            case 0 :
+                report();
+                break;
+            case 1 :
+                csv();
+                break;
+            }
+            waitMillisReport = millis + reportDelay;
+        }
+}
+
 void StatusCtr::report() {
     comPtr->out(F(""));
     comPtr->out(F("    ****    "));

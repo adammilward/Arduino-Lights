@@ -26,7 +26,7 @@ public:
     bool actionSerial(String*, int);
     void report();
     void csv();
-
+    void timer(unsigned long);
 
 private:
     VoltMeter voltMeter;

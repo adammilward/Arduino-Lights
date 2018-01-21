@@ -7,9 +7,7 @@
 
 #include "LightCtr.h"
 
-Light LightCtr::Red(CONFIG::RED_PIN, 0);
-Light LightCtr::Green(CONFIG::GREEN_PIN, 1);
-Light LightCtr::Blue(CONFIG::BLUE_PIN, 2);
+
 
 LightCtr::LightCtr() {
 
@@ -132,6 +130,25 @@ void LightCtr::setReportDelay(float delaySeconds) {
     reportDelay = (unsigned int)(delaySeconds * 1000);
     waitMillisReport = millis() + reportDelay;
     report();
+}
+
+void LightCtr::timer(unsigned long millis) {
+    if (ctrMode != LightCtr::STATIC
+               &&
+               (signed long)(millis - waitMillisLights) >= 0
+       )
+       {
+           waitMillisLights = millis + fadeDelay;
+           interrupt();
+       }
+       else if (reportDelay > 0
+               &&
+               (signed long)(millis - waitMillisReport) >= 0
+       )
+       {
+           report();
+           waitMillisReport = millis + reportDelay;
+       }
 }
 
 void LightCtr::report() {

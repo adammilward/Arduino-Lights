@@ -16,11 +16,13 @@ public:
     Controller(SerialCom*);
     SerialCom *comPtr;
     const unsigned long int IR_HOLD = 0xFFFFFFFF;
-    LightCtr lightCtr;
     StatusCtr statusCtr;
     void irReceive(unsigned long value);
     void serialReceive(String data);
     void timer(unsigned long);
+#ifdef LIGHS
+    LightCtr lightCtr;
+#endif
 private:
 
     enum IRMode {IR_LIGHTS, IR_MP3};

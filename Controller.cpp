@@ -9,45 +9,18 @@
 
 Controller::Controller(SerialCom *inComRef) {
     comPtr = inComRef;
-    lightCtr.setCom(inComRef);
     statusCtr.setCom(inComRef);
-    //FadeLightCtr Fader;
+
+#ifdef LIGHS
+    lightCtr.setCom(inComRef);
+#endif
 }
 
 void Controller::timer(unsigned long millis) {
-    // the time should call a timer function in each of the sub controllers
-    // these then decide what to do, as it is out of scope for master controller
-    if (lightCtr.ctrMode != LightCtr::STATIC
-            &&
-            (signed long)(millis - lightCtr.waitMillisLights) >= 0
-    )
-    {
-        lightCtr.waitMillisLights = millis + lightCtr.fadeDelay;
-        lightCtr.interrupt();
-    }
-    else if (lightCtr.reportDelay > 0
-            &&
-            (signed long)(millis - lightCtr.waitMillisReport) >= 0
-    )
-    {
-        lightCtr.report();
-        lightCtr.waitMillisReport = millis + lightCtr.reportDelay;
-    }
-    else if (statusCtr.reportDelay > 0
-            &&
-            (signed long)(millis - statusCtr.waitMillisReport) >= 0
-    )
-    {
-        switch (statusCtr.reportType) {
-        case 0 :
-            statusCtr.report();
-            break;
-        case 1 :
-            statusCtr.csv();
-            break;
-        }
-        statusCtr.waitMillisReport = millis + statusCtr.reportDelay;
-    }
+   statusCtr.timer(millis);
+#ifdef LIGHS
+    lightCtr.timer(millis);
+#endif
 }
 
 void Controller::serialReceive(String data) {
@@ -116,7 +89,9 @@ bool Controller::processSerial(String* firstWordPtr, int commandLength) {
     bool actioned = false;
     switch (mode) {
     case LIGHTS:
+#ifdef LIGHTS
         actioned = lightCtr.actionSerial(firstWordPtr, commandLength);
+#endif
         break;
     case STATUS:
         actioned = statusCtr.actionSerial(firstWordPtr, commandLength);
@@ -151,7 +126,7 @@ void Controller::irReceive(unsigned long inValue){
     }
     delay(200);
 }
-
+#ifdef LIGHTS
 void Controller::irDecode(unsigned long inValue, int inHCount){
     bool actioned = false;
     switch (iRMode){
@@ -170,4 +145,5 @@ void Controller::irDecode(unsigned long inValue, int inHCount){
         storedCode = 0;
     }
 }
+#endif
 

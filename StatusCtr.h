@@ -37,5 +37,6 @@ private:
 
     bool set(String*, int);
     void setAll(float);
+    void showCalibration();
 };
 #endif /* STATUSCTR_H_ */

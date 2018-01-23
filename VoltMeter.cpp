@@ -5,9 +5,12 @@
  *      Author: Adam Milward
  */
 
+#include "eeprom.h"
 #include "VoltMeter.h"
 
-VoltMeter::VoltMeter() {}
+VoltMeter::VoltMeter() {
+    retrieveCalibration();
+}
 
 void VoltMeter::toggleConfigMode() {
     configMode = (configMode == OFF) ? ON : OFF;
@@ -33,4 +36,33 @@ void VoltMeter::setPin(int pin, float newValue) {
     }
     analogValue /= 3;
     convFactor[pin] = newValue/analogValue;
+}
+
+float VoltMeter::getCalibration(int pin) {
+    return convFactor[pin];
+}
+
+void VoltMeter::saveCalibration() {
+    for (int pin = 0; pin < numberOfPins; pin++) {
+        float value = convFactor[pin];
+        int ee = pin*sizeof(value);
+        byte* p = (byte*)(void*)&value;
+        for (byte i = 0; i < sizeof(value); i++) {
+            EEPROM.write(ee++, *p++);
+        }
+    }
+}
+
+void VoltMeter::retrieveCalibration() {
+    for (int pin = 0; pin < numberOfPins; pin++) {
+        float value = 0.0;
+        int ee = pin*sizeof(value);
+        byte* p = (byte*)(void*)&value;
+        for (byte i = 0; i < sizeof(value); i++) {
+            *p++ = EEPROM.read(ee++);
+            if (value != 0) {
+                convFactor[pin] = value;
+            }
+        }
+    }
 }

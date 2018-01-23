@@ -6,6 +6,8 @@
  */
 
 #include "StatusCtr.h"
+#include "stdlib.h"
+
 StatusCtr::StatusCtr(){
     comPtr = 0;
 }
@@ -27,19 +29,34 @@ bool StatusCtr::actionSerial(String* firstWordPtr , int commandLength) {
             reportType = CSV;
         }
         csv();
-    } else if (*(firstWordPtr) == "calibrate") {
+    } else if (*(firstWordPtr) == "raw") {
         voltMeter.toggleConfigMode();
     } else if (*(firstWordPtr) == "set") {
         set((firstWordPtr+1), --commandLength);
+    } else if (*(firstWordPtr) == "save") {
+        voltMeter.saveCalibration();
+        comPtr->out(F("Calibration Saved"));
+    } else if (*(firstWordPtr) == "calibration") {
+        showCalibration();
     } else {
         comPtr->out(F("Status Controller commands are:"));
         comPtr->out(F("report [nn]"));
-        comPtr->out(F("report [nn]"));
-        comPtr->out(F("calibrate"));
-        comPtr->out(F("where nn is repeat delay in s"));
+        comPtr->out(F("csv [nn]"));
+        comPtr->out(F("(where nn is repeat delay in s)"));
+        comPtr->out(F("raw"));
+        comPtr->out(F("save"));
+        comPtr->out(F("calibration"));
         return false;
     }
     return true;
+}
+
+void StatusCtr::showCalibration() {
+    char buff[14];
+    for (int pin = 0; pin < voltMeter.numberOfPins; pin++) {
+        dtostrf(voltMeter.getCalibration(pin), 4, 12, buff);
+        comPtr->out(buff);
+    }
 }
 
 bool StatusCtr::set(String* firstWordPtr, int commandLength) {

@@ -74,13 +74,11 @@ void loop() {
     // run Serial commands
     while (Serial.available()) {
         String command = Serial.readStringUntil('\n');
-        Serial.print(command);
         masterCtr.serialReceive(command);
     }
 #ifdef MEGA
     while (Serial3.available()) {
         String command = Serial3.readStringUntil('\n');
-        Serial.print(command);
         masterCtr.serialReceive(command);
     }
 #endif

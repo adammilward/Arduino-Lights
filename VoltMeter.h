@@ -17,7 +17,8 @@ public:
     enum ConfigMode {OFF = 0, ON = 1};
     ConfigMode configMode = OFF;
 
-    float convFactor[5] = {
+    static const byte numberOfPins = 5;
+    float convFactor[numberOfPins] = {
         CONFIG::A0_FACTOR,
         CONFIG::A1_FACTOR,
         CONFIG::A2_FACTOR,
@@ -28,6 +29,9 @@ public:
     void toggleConfigMode();
     float getVoltage(int pinNumber);
     void setPin(int, float);
+    void saveCalibration();
+    void retrieveCalibration();
+    float getCalibration(int);
 };
 
 
